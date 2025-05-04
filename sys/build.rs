@@ -278,6 +278,11 @@ fn main() {
         config.define("CMAKE_C_COMPILER", "icx");
         config.define("CMAKE_CXX_COMPILER", "icpx");
     }
+    
+    if target.contains("aarch64") {
+        config.define("GGML_NATIVE", "OFF");
+        config.define("GGML_CPU_ARM_ARCH", "native");
+    }
 
     let destination = config.build();
 
