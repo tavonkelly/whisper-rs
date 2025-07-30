@@ -18,43 +18,43 @@ cargo run --example audio_transcription
 use whisper_rs::{WhisperContext, WhisperContextParameters, FullParams, SamplingStrategy};
 
 fn main() {
-	let path_to_model = std::env::args().nth(1).unwrap();
+    let path_to_model = std::env::args().nth(1).unwrap();
 
-	// load a context and model
-	let ctx = WhisperContext::new_with_params(
-		path_to_model,
-		WhisperContextParameters::default()
-	).expect("failed to load model");
+    // load a context and model
+    let ctx = WhisperContext::new_with_params(
+        path_to_model,
+        WhisperContextParameters::default()
+    ).expect("failed to load model");
 
-	// create a params object
-	let params = FullParams::new(SamplingStrategy::Greedy { best_of: 1 });
+    // create a params object
+    let params = FullParams::new(SamplingStrategy::Greedy { best_of: 1 });
 
-	// assume we have a buffer of audio data
-	// here we'll make a fake one, floating point samples, 32 bit, 16KHz, mono
-	let audio_data = vec![0_f32; 16000 * 2];
+    // assume we have a buffer of audio data
+    // here we'll make a fake one, floating point samples, 32 bit, 16KHz, mono
+    let audio_data = vec![0_f32; 16000 * 2];
 
-	// now we can run the model
-	let mut state = ctx.create_state().expect("failed to create state");
-	state
-		.full(params, &audio_data[..])
-		.expect("failed to run model");
+    // now we can run the model
+    let mut state = ctx.create_state().expect("failed to create state");
+    state
+        .full(params, &audio_data[..])
+        .expect("failed to run model");
 
-	// fetch the results
-	let num_segments = state
-		.full_n_segments()
-		.expect("failed to get number of segments");
-	for i in 0..num_segments {
-		let segment = state
-			.full_get_segment_text(i)
-			.expect("failed to get segment");
-		let start_timestamp = state
-			.full_get_segment_t0(i)
-			.expect("failed to get segment start timestamp");
-		let end_timestamp = state
-			.full_get_segment_t1(i)
-			.expect("failed to get segment end timestamp");
-		println!("[{} - {}]: {}", start_timestamp, end_timestamp, segment);
-	}
+    // fetch the results
+    let num_segments = state
+        .full_n_segments()
+        .expect("failed to get number of segments");
+    for i in 0..num_segments {
+        let segment = state
+            .full_get_segment_text(i)
+            .expect("failed to get segment");
+        let start_timestamp = state
+            .full_get_segment_t0(i)
+            .expect("failed to get segment start timestamp");
+        let end_timestamp = state
+            .full_get_segment_t1(i)
+            .expect("failed to get segment end timestamp");
+        println!("[{} - {}]: {}", start_timestamp, end_timestamp, segment);
+    }
 }
 ```
 
@@ -100,4 +100,7 @@ work out of the box.
 
 [Unlicense](LICENSE)
 
-tl;dr: public domain
+tl;dr: code is in the public domain
+
+[the PR template](./.github/PULL_REQUEST_TEMPLATE.md) is derived from
+[GoToSocial's PR template](https://codeberg.org/superseriousbusiness/gotosocial/src/branch/main/.gitea/pull_request_template.md)
