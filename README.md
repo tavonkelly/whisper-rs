@@ -5,7 +5,7 @@ Rust bindings to [whisper.cpp](https://github.com/ggerganov/whisper.cpp/)
 ## Usage
 
 ```bash
-git clone --recursive https://github.com/tazz4843/whisper-rs.git
+git clone --recursive https://codeberg.org/tazz4843/whisper-rs.git
 
 cd whisper-rs
 
