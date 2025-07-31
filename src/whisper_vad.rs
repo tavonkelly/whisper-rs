@@ -250,9 +250,13 @@ impl WhisperVadSegments {
         self.segment_count
     }
 
+    pub fn index_in_bounds(&self, idx: c_int) -> bool {
+        idx < 0 || idx > self.segment_count
+    }
+
     /// Return the start timestamp of this segment in centiseconds (10s of milliseconds).
     pub fn get_segment_start_timestamp(&self, idx: c_int) -> Option<f32> {
-        if idx < 0 || idx > self.segment_count {
+        if self.index_in_bounds(idx) {
             None
         } else {
             Some(unsafe { whisper_vad_segments_get_segment_t0(self.ptr, idx) })
@@ -261,7 +265,7 @@ impl WhisperVadSegments {
 
     /// Return the end timestamp of this segment in centiseconds (10s of milliseconds).
     pub fn get_segment_end_timestamp(&self, idx: c_int) -> Option<f32> {
-        if idx < 0 || idx > self.segment_count {
+        if self.index_in_bounds(idx) {
             None
         } else {
             Some(unsafe { whisper_vad_segments_get_segment_t1(self.ptr, idx) })
@@ -269,13 +273,10 @@ impl WhisperVadSegments {
     }
 
     pub fn get_segment(&self, idx: c_int) -> Option<WhisperVadSegment> {
-        if idx < 0 || idx > self.segment_count {
-            None
-        } else {
-            let start = unsafe { whisper_vad_segments_get_segment_t0(self.ptr, self.iter_idx) };
-            let end = unsafe { whisper_vad_segments_get_segment_t1(self.ptr, self.iter_idx) };
-            Some(WhisperVadSegment { start, end })
-        }
+        let start = self.get_segment_start_timestamp(idx)?;
+        let end = self.get_segment_end_timestamp(idx)?;
+
+        Some(WhisperVadSegment { start, end })
     }
 }
 
