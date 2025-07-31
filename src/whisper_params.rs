@@ -34,20 +34,19 @@ pub struct SegmentCallbackData {
 type SegmentCallbackFn = Box<dyn FnMut(SegmentCallbackData)>;
 
 #[derive(Clone)]
-pub struct FullParams<'a, 'b, 'c> {
+pub struct FullParams<'a, 'b> {
     pub(crate) fp: whisper_rs_sys::whisper_full_params,
     phantom_lang: PhantomData<&'a str>,
     phantom_tokens: PhantomData<&'b [c_int]>,
-    phantom_model_path: PhantomData<&'c str>,
     grammar: Option<Vec<whisper_rs_sys::whisper_grammar_element>>,
     progress_callback_safe: Option<Arc<Box<dyn FnMut(i32)>>>,
     abort_callback_safe: Option<Arc<Box<dyn FnMut() -> bool>>>,
     segment_calllback_safe: Option<Arc<SegmentCallbackFn>>,
 }
 
-impl<'a, 'b, 'c> FullParams<'a, 'b, 'c> {
+impl<'a, 'b> FullParams<'a, 'b> {
     /// Create a new set of parameters for the decoder.
-    pub fn new(sampling_strategy: SamplingStrategy) -> FullParams<'a, 'b, 'c> {
+    pub fn new(sampling_strategy: SamplingStrategy) -> FullParams<'a, 'b> {
         let mut fp = unsafe {
             whisper_rs_sys::whisper_full_default_params(match sampling_strategy {
                 SamplingStrategy::Greedy { .. } => {
@@ -76,7 +75,6 @@ impl<'a, 'b, 'c> FullParams<'a, 'b, 'c> {
             fp,
             phantom_lang: PhantomData,
             phantom_tokens: PhantomData,
-            phantom_model_path: PhantomData,
             grammar: None,
             progress_callback_safe: None,
             abort_callback_safe: None,
@@ -841,14 +839,14 @@ impl<'a, 'b, 'c> FullParams<'a, 'b, 'c> {
 // following implementations are safe
 // see https://github.com/ggerganov/whisper.cpp/issues/32#issuecomment-1272790388
 // concurrent usage is prevented by &mut self on methods that modify the struct
-unsafe impl Send for FullParams<'_, '_, '_> {}
-unsafe impl Sync for FullParams<'_, '_, '_> {}
+unsafe impl Send for FullParams<'_, '_> {}
+unsafe impl Sync for FullParams<'_, '_> {}
 
 #[cfg(test)]
 mod test_whisper_params_initial_prompt {
     use super::*;
 
-    impl<'a, 'b, 'c> FullParams<'a, 'b, 'c> {
+    impl<'a, 'b> FullParams<'a, 'b> {
         pub fn get_initial_prompt(&self) -> &str {
             // SAFETY: Ensure this is safe and respects the lifetime of the string in self.fp
             unsafe {
