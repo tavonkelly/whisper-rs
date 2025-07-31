@@ -1,6 +1,5 @@
 use crate::WhisperError;
 use std::ffi::{c_char, CString};
-use std::iter::Peekable;
 use std::os::raw::c_int;
 use whisper_rs_sys::{
     whisper_vad_context, whisper_vad_context_params, whisper_vad_detect_speech, whisper_vad_free,
@@ -197,7 +196,7 @@ impl WhisperVadContext {
         if ptr.is_null() {
             Err(WhisperError::NullPointer)
         } else {
-            Ok(WhisperVadSegments { ptr })
+            Ok(WhisperVadSegments::new(ptr))
         }
     }
 
@@ -219,7 +218,7 @@ impl WhisperVadContext {
         if ptr.is_null() {
             Err(WhisperError::NullPointer)
         } else {
-            Ok(WhisperVadSegments { ptr })
+            Ok(WhisperVadSegments::new(ptr))
         }
     }
 }
@@ -268,27 +267,34 @@ impl WhisperVadSegments {
             Some(unsafe { whisper_vad_segments_get_segment_t1(self.ptr, idx) })
         }
     }
+
+    pub fn get_segment(&self, idx: c_int) -> Option<WhisperVadSegment> {
+        if idx < 0 || idx > self.segment_count {
+            None
+        } else {
+            let start = unsafe { whisper_vad_segments_get_segment_t0(self.ptr, self.iter_idx) };
+            let end = unsafe { whisper_vad_segments_get_segment_t1(self.ptr, self.iter_idx) };
+            Some(WhisperVadSegment { start, end })
+        }
+    }
 }
 
 impl Iterator for WhisperVadSegments {
     type Item = WhisperVadSegment;
 
     fn next(&mut self) -> Option<Self::Item> {
-        if self.iter_idx > self.segment_count {
-            return None;
-        }
-
-        let start = unsafe { whisper_vad_segments_get_segment_t0(self.ptr, self.iter_idx) };
-        let end = unsafe { whisper_vad_segments_get_segment_t1(self.ptr, self.iter_idx) };
+        let segment = self.get_segment(self.iter_idx)?;
         self.iter_idx += 1;
-        Some(WhisperVadSegment { start, end })
+        Some(segment)
     }
 }
 
 #[derive(Copy, Clone)]
 pub struct WhisperVadSegment {
-    start: f32,
-    end: f32,
+    /// Start timestamp of this segment in centiseconds.
+    pub start: f32,
+    /// End timestamp of this segment in centiseconds.
+    pub end: f32,
 }
 
 impl Drop for WhisperVadSegments {
