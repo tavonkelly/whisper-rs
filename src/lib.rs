@@ -15,6 +15,7 @@ mod whisper_grammar;
 mod whisper_logging_hook;
 mod whisper_params;
 mod whisper_state;
+mod whisper_vad;
 
 pub use common_logging::GGMLLogLevel;
 pub use error::WhisperError;
