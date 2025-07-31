@@ -588,4 +588,11 @@ impl WhisperState {
             )
         }
     }
+
+    /// Get the no_speech probability for the specified segment
+    pub fn full_get_segment_no_speech_prob(&self, i_segment: c_int) -> f32 {
+        unsafe {
+            whisper_rs_sys::whisper_full_get_segment_no_speech_prob_from_state(self.ptr, i_segment)
+        }
+    }
 }

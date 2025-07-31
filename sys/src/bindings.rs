@@ -305,10 +305,7 @@ pub const GGML_EXIT_ABORTED: u32 = 1;
 pub const GGML_ROPE_TYPE_NEOX: u32 = 2;
 pub const GGML_ROPE_TYPE_MROPE: u32 = 8;
 pub const GGML_ROPE_TYPE_VISION: u32 = 24;
-pub const GGUF_MAGIC: &[u8; 5] = b"GGUF\0";
-pub const GGUF_VERSION: u32 = 3;
-pub const GGUF_DEFAULT_ALIGNMENT: u32 = 32;
-pub const GGML_KQ_MASK_PAD: u32 = 32;
+pub const GGML_KQ_MASK_PAD: u32 = 64;
 pub const GGML_N_TASKS_MAX: i32 = -1;
 pub const WHISPER_SAMPLE_RATE: u32 = 16000;
 pub const WHISPER_N_FFT: u32 = 400;
@@ -1266,12 +1263,8 @@ pub const ggml_type_GGML_TYPE_TQ2_0: ggml_type = 35;
 pub const ggml_type_GGML_TYPE_COUNT: ggml_type = 39;
 pub type ggml_type = ::std::os::raw::c_uint;
 pub const ggml_prec_GGML_PREC_DEFAULT: ggml_prec = 0;
-pub const ggml_prec_GGML_PREC_F32: ggml_prec = 1;
+pub const ggml_prec_GGML_PREC_F32: ggml_prec = 10;
 pub type ggml_prec = ::std::os::raw::c_uint;
-pub const ggml_backend_type_GGML_BACKEND_TYPE_CPU: ggml_backend_type = 0;
-pub const ggml_backend_type_GGML_BACKEND_TYPE_GPU: ggml_backend_type = 10;
-pub const ggml_backend_type_GGML_BACKEND_TYPE_GPU_SPLIT: ggml_backend_type = 20;
-pub type ggml_backend_type = ::std::os::raw::c_uint;
 pub const ggml_ftype_GGML_FTYPE_UNKNOWN: ggml_ftype = -1;
 pub const ggml_ftype_GGML_FTYPE_ALL_F32: ggml_ftype = 0;
 pub const ggml_ftype_GGML_FTYPE_MOSTLY_F16: ggml_ftype = 1;
@@ -1323,63 +1316,64 @@ pub const ggml_op_GGML_OP_NORM: ggml_op = 22;
 pub const ggml_op_GGML_OP_RMS_NORM: ggml_op = 23;
 pub const ggml_op_GGML_OP_RMS_NORM_BACK: ggml_op = 24;
 pub const ggml_op_GGML_OP_GROUP_NORM: ggml_op = 25;
-pub const ggml_op_GGML_OP_MUL_MAT: ggml_op = 26;
-pub const ggml_op_GGML_OP_MUL_MAT_ID: ggml_op = 27;
-pub const ggml_op_GGML_OP_OUT_PROD: ggml_op = 28;
-pub const ggml_op_GGML_OP_SCALE: ggml_op = 29;
-pub const ggml_op_GGML_OP_SET: ggml_op = 30;
-pub const ggml_op_GGML_OP_CPY: ggml_op = 31;
-pub const ggml_op_GGML_OP_CONT: ggml_op = 32;
-pub const ggml_op_GGML_OP_RESHAPE: ggml_op = 33;
-pub const ggml_op_GGML_OP_VIEW: ggml_op = 34;
-pub const ggml_op_GGML_OP_PERMUTE: ggml_op = 35;
-pub const ggml_op_GGML_OP_TRANSPOSE: ggml_op = 36;
-pub const ggml_op_GGML_OP_GET_ROWS: ggml_op = 37;
-pub const ggml_op_GGML_OP_GET_ROWS_BACK: ggml_op = 38;
-pub const ggml_op_GGML_OP_DIAG: ggml_op = 39;
-pub const ggml_op_GGML_OP_DIAG_MASK_INF: ggml_op = 40;
-pub const ggml_op_GGML_OP_DIAG_MASK_ZERO: ggml_op = 41;
-pub const ggml_op_GGML_OP_SOFT_MAX: ggml_op = 42;
-pub const ggml_op_GGML_OP_SOFT_MAX_BACK: ggml_op = 43;
-pub const ggml_op_GGML_OP_ROPE: ggml_op = 44;
-pub const ggml_op_GGML_OP_ROPE_BACK: ggml_op = 45;
-pub const ggml_op_GGML_OP_CLAMP: ggml_op = 46;
-pub const ggml_op_GGML_OP_CONV_TRANSPOSE_1D: ggml_op = 47;
-pub const ggml_op_GGML_OP_IM2COL: ggml_op = 48;
-pub const ggml_op_GGML_OP_IM2COL_BACK: ggml_op = 49;
-pub const ggml_op_GGML_OP_CONV_TRANSPOSE_2D: ggml_op = 50;
-pub const ggml_op_GGML_OP_POOL_1D: ggml_op = 51;
-pub const ggml_op_GGML_OP_POOL_2D: ggml_op = 52;
-pub const ggml_op_GGML_OP_POOL_2D_BACK: ggml_op = 53;
-pub const ggml_op_GGML_OP_UPSCALE: ggml_op = 54;
-pub const ggml_op_GGML_OP_PAD: ggml_op = 55;
-pub const ggml_op_GGML_OP_PAD_REFLECT_1D: ggml_op = 56;
-pub const ggml_op_GGML_OP_ARANGE: ggml_op = 57;
-pub const ggml_op_GGML_OP_TIMESTEP_EMBEDDING: ggml_op = 58;
-pub const ggml_op_GGML_OP_ARGSORT: ggml_op = 59;
-pub const ggml_op_GGML_OP_LEAKY_RELU: ggml_op = 60;
-pub const ggml_op_GGML_OP_FLASH_ATTN_EXT: ggml_op = 61;
-pub const ggml_op_GGML_OP_FLASH_ATTN_BACK: ggml_op = 62;
-pub const ggml_op_GGML_OP_SSM_CONV: ggml_op = 63;
-pub const ggml_op_GGML_OP_SSM_SCAN: ggml_op = 64;
-pub const ggml_op_GGML_OP_WIN_PART: ggml_op = 65;
-pub const ggml_op_GGML_OP_WIN_UNPART: ggml_op = 66;
-pub const ggml_op_GGML_OP_GET_REL_POS: ggml_op = 67;
-pub const ggml_op_GGML_OP_ADD_REL_POS: ggml_op = 68;
-pub const ggml_op_GGML_OP_RWKV_WKV6: ggml_op = 69;
-pub const ggml_op_GGML_OP_UNARY: ggml_op = 70;
-pub const ggml_op_GGML_OP_MAP_UNARY: ggml_op = 71;
-pub const ggml_op_GGML_OP_MAP_BINARY: ggml_op = 72;
-pub const ggml_op_GGML_OP_MAP_CUSTOM1_F32: ggml_op = 73;
-pub const ggml_op_GGML_OP_MAP_CUSTOM2_F32: ggml_op = 74;
-pub const ggml_op_GGML_OP_MAP_CUSTOM3_F32: ggml_op = 75;
+pub const ggml_op_GGML_OP_L2_NORM: ggml_op = 26;
+pub const ggml_op_GGML_OP_MUL_MAT: ggml_op = 27;
+pub const ggml_op_GGML_OP_MUL_MAT_ID: ggml_op = 28;
+pub const ggml_op_GGML_OP_OUT_PROD: ggml_op = 29;
+pub const ggml_op_GGML_OP_SCALE: ggml_op = 30;
+pub const ggml_op_GGML_OP_SET: ggml_op = 31;
+pub const ggml_op_GGML_OP_CPY: ggml_op = 32;
+pub const ggml_op_GGML_OP_CONT: ggml_op = 33;
+pub const ggml_op_GGML_OP_RESHAPE: ggml_op = 34;
+pub const ggml_op_GGML_OP_VIEW: ggml_op = 35;
+pub const ggml_op_GGML_OP_PERMUTE: ggml_op = 36;
+pub const ggml_op_GGML_OP_TRANSPOSE: ggml_op = 37;
+pub const ggml_op_GGML_OP_GET_ROWS: ggml_op = 38;
+pub const ggml_op_GGML_OP_GET_ROWS_BACK: ggml_op = 39;
+pub const ggml_op_GGML_OP_DIAG: ggml_op = 40;
+pub const ggml_op_GGML_OP_DIAG_MASK_INF: ggml_op = 41;
+pub const ggml_op_GGML_OP_DIAG_MASK_ZERO: ggml_op = 42;
+pub const ggml_op_GGML_OP_SOFT_MAX: ggml_op = 43;
+pub const ggml_op_GGML_OP_SOFT_MAX_BACK: ggml_op = 44;
+pub const ggml_op_GGML_OP_ROPE: ggml_op = 45;
+pub const ggml_op_GGML_OP_ROPE_BACK: ggml_op = 46;
+pub const ggml_op_GGML_OP_CLAMP: ggml_op = 47;
+pub const ggml_op_GGML_OP_CONV_TRANSPOSE_1D: ggml_op = 48;
+pub const ggml_op_GGML_OP_IM2COL: ggml_op = 49;
+pub const ggml_op_GGML_OP_IM2COL_BACK: ggml_op = 50;
+pub const ggml_op_GGML_OP_CONV_2D_DW: ggml_op = 51;
+pub const ggml_op_GGML_OP_CONV_TRANSPOSE_2D: ggml_op = 52;
+pub const ggml_op_GGML_OP_POOL_1D: ggml_op = 53;
+pub const ggml_op_GGML_OP_POOL_2D: ggml_op = 54;
+pub const ggml_op_GGML_OP_POOL_2D_BACK: ggml_op = 55;
+pub const ggml_op_GGML_OP_UPSCALE: ggml_op = 56;
+pub const ggml_op_GGML_OP_PAD: ggml_op = 57;
+pub const ggml_op_GGML_OP_PAD_REFLECT_1D: ggml_op = 58;
+pub const ggml_op_GGML_OP_ROLL: ggml_op = 59;
+pub const ggml_op_GGML_OP_ARANGE: ggml_op = 60;
+pub const ggml_op_GGML_OP_TIMESTEP_EMBEDDING: ggml_op = 61;
+pub const ggml_op_GGML_OP_ARGSORT: ggml_op = 62;
+pub const ggml_op_GGML_OP_LEAKY_RELU: ggml_op = 63;
+pub const ggml_op_GGML_OP_FLASH_ATTN_EXT: ggml_op = 64;
+pub const ggml_op_GGML_OP_FLASH_ATTN_BACK: ggml_op = 65;
+pub const ggml_op_GGML_OP_SSM_CONV: ggml_op = 66;
+pub const ggml_op_GGML_OP_SSM_SCAN: ggml_op = 67;
+pub const ggml_op_GGML_OP_WIN_PART: ggml_op = 68;
+pub const ggml_op_GGML_OP_WIN_UNPART: ggml_op = 69;
+pub const ggml_op_GGML_OP_GET_REL_POS: ggml_op = 70;
+pub const ggml_op_GGML_OP_ADD_REL_POS: ggml_op = 71;
+pub const ggml_op_GGML_OP_RWKV_WKV6: ggml_op = 72;
+pub const ggml_op_GGML_OP_GATED_LINEAR_ATTN: ggml_op = 73;
+pub const ggml_op_GGML_OP_RWKV_WKV7: ggml_op = 74;
+pub const ggml_op_GGML_OP_UNARY: ggml_op = 75;
 pub const ggml_op_GGML_OP_MAP_CUSTOM1: ggml_op = 76;
 pub const ggml_op_GGML_OP_MAP_CUSTOM2: ggml_op = 77;
 pub const ggml_op_GGML_OP_MAP_CUSTOM3: ggml_op = 78;
-pub const ggml_op_GGML_OP_CROSS_ENTROPY_LOSS: ggml_op = 79;
-pub const ggml_op_GGML_OP_CROSS_ENTROPY_LOSS_BACK: ggml_op = 80;
-pub const ggml_op_GGML_OP_OPT_STEP_ADAMW: ggml_op = 81;
-pub const ggml_op_GGML_OP_COUNT: ggml_op = 82;
+pub const ggml_op_GGML_OP_CUSTOM: ggml_op = 79;
+pub const ggml_op_GGML_OP_CROSS_ENTROPY_LOSS: ggml_op = 80;
+pub const ggml_op_GGML_OP_CROSS_ENTROPY_LOSS_BACK: ggml_op = 81;
+pub const ggml_op_GGML_OP_OPT_STEP_ADAMW: ggml_op = 82;
+pub const ggml_op_GGML_OP_COUNT: ggml_op = 83;
 pub type ggml_op = ::std::os::raw::c_uint;
 pub const ggml_unary_op_GGML_UNARY_OP_ABS: ggml_unary_op = 0;
 pub const ggml_unary_op_GGML_UNARY_OP_SGN: ggml_unary_op = 1;
@@ -1395,7 +1389,8 @@ pub const ggml_unary_op_GGML_UNARY_OP_SILU: ggml_unary_op = 10;
 pub const ggml_unary_op_GGML_UNARY_OP_HARDSWISH: ggml_unary_op = 11;
 pub const ggml_unary_op_GGML_UNARY_OP_HARDSIGMOID: ggml_unary_op = 12;
 pub const ggml_unary_op_GGML_UNARY_OP_EXP: ggml_unary_op = 13;
-pub const ggml_unary_op_GGML_UNARY_OP_COUNT: ggml_unary_op = 14;
+pub const ggml_unary_op_GGML_UNARY_OP_GELU_ERF: ggml_unary_op = 14;
+pub const ggml_unary_op_GGML_UNARY_OP_COUNT: ggml_unary_op = 15;
 pub type ggml_unary_op = ::std::os::raw::c_uint;
 pub const ggml_object_type_GGML_OBJECT_TYPE_TENSOR: ggml_object_type = 0;
 pub const ggml_object_type_GGML_OBJECT_TYPE_GRAPH: ggml_object_type = 1;
@@ -1435,7 +1430,6 @@ const _: () = {
 #[derive(Debug, Copy, Clone)]
 pub struct ggml_tensor {
     pub type_: ggml_type,
-    pub backend: ggml_backend_type,
     pub buffer: *mut ggml_backend_buffer,
     pub ne: [i64; 4usize],
     pub nb: [usize; 4usize],
@@ -1455,8 +1449,6 @@ const _: () = {
     ["Size of ggml_tensor"][::std::mem::size_of::<ggml_tensor>() - 336usize];
     ["Alignment of ggml_tensor"][::std::mem::align_of::<ggml_tensor>() - 8usize];
     ["Offset of field: ggml_tensor::type_"][::std::mem::offset_of!(ggml_tensor, type_) - 0usize];
-    ["Offset of field: ggml_tensor::backend"]
-        [::std::mem::offset_of!(ggml_tensor, backend) - 4usize];
     ["Offset of field: ggml_tensor::buffer"][::std::mem::offset_of!(ggml_tensor, buffer) - 8usize];
     ["Offset of field: ggml_tensor::ne"][::std::mem::offset_of!(ggml_tensor, ne) - 16usize];
     ["Offset of field: ggml_tensor::nb"][::std::mem::offset_of!(ggml_tensor, nb) - 48usize];
@@ -1593,6 +1585,12 @@ unsafe extern "C" {
 }
 unsafe extern "C" {
     pub fn ggml_is_contiguous_2(tensor: *const ggml_tensor) -> bool;
+}
+unsafe extern "C" {
+    pub fn ggml_is_contiguously_allocated(tensor: *const ggml_tensor) -> bool;
+}
+unsafe extern "C" {
+    pub fn ggml_is_contiguous_channels(tensor: *const ggml_tensor) -> bool;
 }
 unsafe extern "C" {
     pub fn ggml_are_same_shape(t0: *const ggml_tensor, t1: *const ggml_tensor) -> bool;
@@ -1748,7 +1746,7 @@ unsafe extern "C" {
     pub fn ggml_set_output(tensor: *mut ggml_tensor);
 }
 unsafe extern "C" {
-    pub fn ggml_set_param(ctx: *mut ggml_context, tensor: *mut ggml_tensor);
+    pub fn ggml_set_param(tensor: *mut ggml_tensor);
 }
 unsafe extern "C" {
     pub fn ggml_set_loss(tensor: *mut ggml_tensor);
@@ -1916,6 +1914,16 @@ unsafe extern "C" {
     ) -> *mut ggml_tensor;
 }
 unsafe extern "C" {
+    pub fn ggml_repeat_4d(
+        ctx: *mut ggml_context,
+        a: *mut ggml_tensor,
+        ne0: i64,
+        ne1: i64,
+        ne2: i64,
+        ne3: i64,
+    ) -> *mut ggml_tensor;
+}
+unsafe extern "C" {
     pub fn ggml_repeat_back(
         ctx: *mut ggml_context,
         a: *mut ggml_tensor,
@@ -1993,6 +2001,12 @@ unsafe extern "C" {
     pub fn ggml_gelu_inplace(ctx: *mut ggml_context, a: *mut ggml_tensor) -> *mut ggml_tensor;
 }
 unsafe extern "C" {
+    pub fn ggml_gelu_erf(ctx: *mut ggml_context, a: *mut ggml_tensor) -> *mut ggml_tensor;
+}
+unsafe extern "C" {
+    pub fn ggml_gelu_erf_inplace(ctx: *mut ggml_context, a: *mut ggml_tensor) -> *mut ggml_tensor;
+}
+unsafe extern "C" {
     pub fn ggml_gelu_quick(ctx: *mut ggml_context, a: *mut ggml_tensor) -> *mut ggml_tensor;
 }
 unsafe extern "C" {
@@ -2058,6 +2072,16 @@ unsafe extern "C" {
         ctx: *mut ggml_context,
         a: *mut ggml_tensor,
         n_groups: ::std::os::raw::c_int,
+        eps: f32,
+    ) -> *mut ggml_tensor;
+}
+unsafe extern "C" {
+    pub fn ggml_l2_norm(ctx: *mut ggml_context, a: *mut ggml_tensor, eps: f32) -> *mut ggml_tensor;
+}
+unsafe extern "C" {
+    pub fn ggml_l2_norm_inplace(
+        ctx: *mut ggml_context,
+        a: *mut ggml_tensor,
         eps: f32,
     ) -> *mut ggml_tensor;
 }
@@ -2367,17 +2391,21 @@ unsafe extern "C" {
     ) -> *mut ggml_tensor;
 }
 unsafe extern "C" {
-    pub fn ggml_soft_max_back(
+    pub fn ggml_soft_max_ext_back(
         ctx: *mut ggml_context,
         a: *mut ggml_tensor,
         b: *mut ggml_tensor,
+        scale: f32,
+        max_bias: f32,
     ) -> *mut ggml_tensor;
 }
 unsafe extern "C" {
-    pub fn ggml_soft_max_back_inplace(
+    pub fn ggml_soft_max_ext_back_inplace(
         ctx: *mut ggml_context,
         a: *mut ggml_tensor,
         b: *mut ggml_tensor,
+        scale: f32,
+        max_bias: f32,
     ) -> *mut ggml_tensor;
 }
 unsafe extern "C" {
@@ -2493,12 +2521,30 @@ unsafe extern "C" {
     );
 }
 unsafe extern "C" {
-    pub fn ggml_rope_back(
+    pub fn ggml_rope_ext_back(
         ctx: *mut ggml_context,
         a: *mut ggml_tensor,
         b: *mut ggml_tensor,
         c: *mut ggml_tensor,
         n_dims: ::std::os::raw::c_int,
+        mode: ::std::os::raw::c_int,
+        n_ctx_orig: ::std::os::raw::c_int,
+        freq_base: f32,
+        freq_scale: f32,
+        ext_factor: f32,
+        attn_factor: f32,
+        beta_fast: f32,
+        beta_slow: f32,
+    ) -> *mut ggml_tensor;
+}
+unsafe extern "C" {
+    pub fn ggml_rope_multi_back(
+        ctx: *mut ggml_context,
+        a: *mut ggml_tensor,
+        b: *mut ggml_tensor,
+        c: *mut ggml_tensor,
+        n_dims: ::std::os::raw::c_int,
+        sections: *mut ::std::os::raw::c_int,
         mode: ::std::os::raw::c_int,
         n_ctx_orig: ::std::os::raw::c_int,
         freq_base: f32,
@@ -2636,6 +2682,19 @@ unsafe extern "C" {
     ) -> *mut ggml_tensor;
 }
 unsafe extern "C" {
+    pub fn ggml_conv_2d_dw_direct(
+        ctx: *mut ggml_context,
+        a: *mut ggml_tensor,
+        b: *mut ggml_tensor,
+        stride0: ::std::os::raw::c_int,
+        stride1: ::std::os::raw::c_int,
+        pad0: ::std::os::raw::c_int,
+        pad1: ::std::os::raw::c_int,
+        dilation0: ::std::os::raw::c_int,
+        dilation1: ::std::os::raw::c_int,
+    ) -> *mut ggml_tensor;
+}
+unsafe extern "C" {
     pub fn ggml_conv_transpose_2d_p0(
         ctx: *mut ggml_context,
         a: *mut ggml_tensor,
@@ -2684,11 +2743,15 @@ unsafe extern "C" {
         p1: f32,
     ) -> *mut ggml_tensor;
 }
+pub const ggml_scale_mode_GGML_SCALE_MODE_NEAREST: ggml_scale_mode = 0;
+pub const ggml_scale_mode_GGML_SCALE_MODE_BILINEAR: ggml_scale_mode = 1;
+pub type ggml_scale_mode = ::std::os::raw::c_uint;
 unsafe extern "C" {
     pub fn ggml_upscale(
         ctx: *mut ggml_context,
         a: *mut ggml_tensor,
         scale_factor: ::std::os::raw::c_int,
+        mode: ggml_scale_mode,
     ) -> *mut ggml_tensor;
 }
 unsafe extern "C" {
@@ -2699,6 +2762,7 @@ unsafe extern "C" {
         ne1: ::std::os::raw::c_int,
         ne2: ::std::os::raw::c_int,
         ne3: ::std::os::raw::c_int,
+        mode: ggml_scale_mode,
     ) -> *mut ggml_tensor;
 }
 unsafe extern "C" {
@@ -2717,6 +2781,16 @@ unsafe extern "C" {
         a: *mut ggml_tensor,
         p0: ::std::os::raw::c_int,
         p1: ::std::os::raw::c_int,
+    ) -> *mut ggml_tensor;
+}
+unsafe extern "C" {
+    pub fn ggml_roll(
+        ctx: *mut ggml_context,
+        a: *mut ggml_tensor,
+        shift0: ::std::os::raw::c_int,
+        shift1: ::std::os::raw::c_int,
+        shift2: ::std::os::raw::c_int,
+        shift3: ::std::os::raw::c_int,
     ) -> *mut ggml_tensor;
 }
 unsafe extern "C" {
@@ -2863,110 +2937,27 @@ unsafe extern "C" {
         state: *mut ggml_tensor,
     ) -> *mut ggml_tensor;
 }
-pub type ggml_unary_op_f32_t = ::std::option::Option<
-    unsafe extern "C" fn(arg1: ::std::os::raw::c_int, arg2: *mut f32, arg3: *const f32),
->;
-pub type ggml_binary_op_f32_t = ::std::option::Option<
-    unsafe extern "C" fn(
-        arg1: ::std::os::raw::c_int,
-        arg2: *mut f32,
-        arg3: *const f32,
-        arg4: *const f32,
-    ),
->;
-pub type ggml_custom1_op_f32_t =
-    ::std::option::Option<unsafe extern "C" fn(arg1: *mut ggml_tensor, arg2: *const ggml_tensor)>;
-pub type ggml_custom2_op_f32_t = ::std::option::Option<
-    unsafe extern "C" fn(
-        arg1: *mut ggml_tensor,
-        arg2: *const ggml_tensor,
-        arg3: *const ggml_tensor,
-    ),
->;
-pub type ggml_custom3_op_f32_t = ::std::option::Option<
-    unsafe extern "C" fn(
-        arg1: *mut ggml_tensor,
-        arg2: *const ggml_tensor,
-        arg3: *const ggml_tensor,
-        arg4: *const ggml_tensor,
-    ),
->;
 unsafe extern "C" {
-    pub fn ggml_map_unary_f32(
+    pub fn ggml_gated_linear_attn(
         ctx: *mut ggml_context,
-        a: *mut ggml_tensor,
-        fun: ggml_unary_op_f32_t,
+        k: *mut ggml_tensor,
+        v: *mut ggml_tensor,
+        q: *mut ggml_tensor,
+        g: *mut ggml_tensor,
+        state: *mut ggml_tensor,
+        scale: f32,
     ) -> *mut ggml_tensor;
 }
 unsafe extern "C" {
-    pub fn ggml_map_unary_inplace_f32(
+    pub fn ggml_rwkv_wkv7(
         ctx: *mut ggml_context,
-        a: *mut ggml_tensor,
-        fun: ggml_unary_op_f32_t,
-    ) -> *mut ggml_tensor;
-}
-unsafe extern "C" {
-    pub fn ggml_map_binary_f32(
-        ctx: *mut ggml_context,
+        r: *mut ggml_tensor,
+        w: *mut ggml_tensor,
+        k: *mut ggml_tensor,
+        v: *mut ggml_tensor,
         a: *mut ggml_tensor,
         b: *mut ggml_tensor,
-        fun: ggml_binary_op_f32_t,
-    ) -> *mut ggml_tensor;
-}
-unsafe extern "C" {
-    pub fn ggml_map_binary_inplace_f32(
-        ctx: *mut ggml_context,
-        a: *mut ggml_tensor,
-        b: *mut ggml_tensor,
-        fun: ggml_binary_op_f32_t,
-    ) -> *mut ggml_tensor;
-}
-unsafe extern "C" {
-    pub fn ggml_map_custom1_f32(
-        ctx: *mut ggml_context,
-        a: *mut ggml_tensor,
-        fun: ggml_custom1_op_f32_t,
-    ) -> *mut ggml_tensor;
-}
-unsafe extern "C" {
-    pub fn ggml_map_custom1_inplace_f32(
-        ctx: *mut ggml_context,
-        a: *mut ggml_tensor,
-        fun: ggml_custom1_op_f32_t,
-    ) -> *mut ggml_tensor;
-}
-unsafe extern "C" {
-    pub fn ggml_map_custom2_f32(
-        ctx: *mut ggml_context,
-        a: *mut ggml_tensor,
-        b: *mut ggml_tensor,
-        fun: ggml_custom2_op_f32_t,
-    ) -> *mut ggml_tensor;
-}
-unsafe extern "C" {
-    pub fn ggml_map_custom2_inplace_f32(
-        ctx: *mut ggml_context,
-        a: *mut ggml_tensor,
-        b: *mut ggml_tensor,
-        fun: ggml_custom2_op_f32_t,
-    ) -> *mut ggml_tensor;
-}
-unsafe extern "C" {
-    pub fn ggml_map_custom3_f32(
-        ctx: *mut ggml_context,
-        a: *mut ggml_tensor,
-        b: *mut ggml_tensor,
-        c: *mut ggml_tensor,
-        fun: ggml_custom3_op_f32_t,
-    ) -> *mut ggml_tensor;
-}
-unsafe extern "C" {
-    pub fn ggml_map_custom3_inplace_f32(
-        ctx: *mut ggml_context,
-        a: *mut ggml_tensor,
-        b: *mut ggml_tensor,
-        c: *mut ggml_tensor,
-        fun: ggml_custom3_op_f32_t,
+        state: *mut ggml_tensor,
     ) -> *mut ggml_tensor;
 }
 pub type ggml_custom1_op_t = ::std::option::Option<
@@ -3059,6 +3050,40 @@ unsafe extern "C" {
         userdata: *mut ::std::os::raw::c_void,
     ) -> *mut ggml_tensor;
 }
+pub type ggml_custom_op_t = ::std::option::Option<
+    unsafe extern "C" fn(
+        dst: *mut ggml_tensor,
+        ith: ::std::os::raw::c_int,
+        nth: ::std::os::raw::c_int,
+        userdata: *mut ::std::os::raw::c_void,
+    ),
+>;
+unsafe extern "C" {
+    pub fn ggml_custom_4d(
+        ctx: *mut ggml_context,
+        type_: ggml_type,
+        ne0: i64,
+        ne1: i64,
+        ne2: i64,
+        ne3: i64,
+        args: *mut *mut ggml_tensor,
+        n_args: ::std::os::raw::c_int,
+        fun: ggml_custom_op_t,
+        n_tasks: ::std::os::raw::c_int,
+        userdata: *mut ::std::os::raw::c_void,
+    ) -> *mut ggml_tensor;
+}
+unsafe extern "C" {
+    pub fn ggml_custom_inplace(
+        ctx: *mut ggml_context,
+        a: *mut ggml_tensor,
+        args: *mut *mut ggml_tensor,
+        n_args: ::std::os::raw::c_int,
+        fun: ggml_custom_op_t,
+        n_tasks: ::std::os::raw::c_int,
+        userdata: *mut ::std::os::raw::c_void,
+    ) -> *mut ggml_tensor;
+}
 unsafe extern "C" {
     pub fn ggml_cross_entropy_loss(
         ctx: *mut ggml_context,
@@ -3089,10 +3114,9 @@ unsafe extern "C" {
 }
 unsafe extern "C" {
     pub fn ggml_build_backward_expand(
-        ctx_static: *mut ggml_context,
-        ctx_compute: *mut ggml_context,
+        ctx: *mut ggml_context,
         cgraph: *mut ggml_cgraph,
-        accumulate: bool,
+        grad_accs: *mut *mut ggml_tensor,
     );
 }
 unsafe extern "C" {
@@ -3106,7 +3130,11 @@ unsafe extern "C" {
     ) -> *mut ggml_cgraph;
 }
 unsafe extern "C" {
-    pub fn ggml_graph_dup(ctx: *mut ggml_context, cgraph: *mut ggml_cgraph) -> *mut ggml_cgraph;
+    pub fn ggml_graph_dup(
+        ctx: *mut ggml_context,
+        cgraph: *mut ggml_cgraph,
+        force_grads: bool,
+    ) -> *mut ggml_cgraph;
 }
 unsafe extern "C" {
     pub fn ggml_graph_cpy(src: *mut ggml_cgraph, dst: *mut ggml_cgraph);
@@ -3157,16 +3185,6 @@ unsafe extern "C" {
     ) -> *mut ggml_tensor;
 }
 unsafe extern "C" {
-    pub fn ggml_graph_export(cgraph: *const ggml_cgraph, fname: *const ::std::os::raw::c_char);
-}
-unsafe extern "C" {
-    pub fn ggml_graph_import(
-        fname: *const ::std::os::raw::c_char,
-        ctx_data: *mut *mut ggml_context,
-        ctx_eval: *mut *mut ggml_context,
-    ) -> *mut ggml_cgraph;
-}
-unsafe extern "C" {
     pub fn ggml_graph_print(cgraph: *const ggml_cgraph);
 }
 unsafe extern "C" {
@@ -3209,268 +3227,6 @@ unsafe extern "C" {
         imatrix: *const f32,
     ) -> usize;
 }
-pub const gguf_type_GGUF_TYPE_UINT8: gguf_type = 0;
-pub const gguf_type_GGUF_TYPE_INT8: gguf_type = 1;
-pub const gguf_type_GGUF_TYPE_UINT16: gguf_type = 2;
-pub const gguf_type_GGUF_TYPE_INT16: gguf_type = 3;
-pub const gguf_type_GGUF_TYPE_UINT32: gguf_type = 4;
-pub const gguf_type_GGUF_TYPE_INT32: gguf_type = 5;
-pub const gguf_type_GGUF_TYPE_FLOAT32: gguf_type = 6;
-pub const gguf_type_GGUF_TYPE_BOOL: gguf_type = 7;
-pub const gguf_type_GGUF_TYPE_STRING: gguf_type = 8;
-pub const gguf_type_GGUF_TYPE_ARRAY: gguf_type = 9;
-pub const gguf_type_GGUF_TYPE_UINT64: gguf_type = 10;
-pub const gguf_type_GGUF_TYPE_INT64: gguf_type = 11;
-pub const gguf_type_GGUF_TYPE_FLOAT64: gguf_type = 12;
-pub const gguf_type_GGUF_TYPE_COUNT: gguf_type = 13;
-pub type gguf_type = ::std::os::raw::c_uint;
-#[repr(C)]
-#[derive(Debug, Copy, Clone)]
-pub struct gguf_context {
-    _unused: [u8; 0],
-}
-#[repr(C)]
-#[derive(Debug, Copy, Clone)]
-pub struct gguf_init_params {
-    pub no_alloc: bool,
-    pub ctx: *mut *mut ggml_context,
-}
-#[allow(clippy::unnecessary_operation, clippy::identity_op)]
-const _: () = {
-    ["Size of gguf_init_params"][::std::mem::size_of::<gguf_init_params>() - 16usize];
-    ["Alignment of gguf_init_params"][::std::mem::align_of::<gguf_init_params>() - 8usize];
-    ["Offset of field: gguf_init_params::no_alloc"]
-        [::std::mem::offset_of!(gguf_init_params, no_alloc) - 0usize];
-    ["Offset of field: gguf_init_params::ctx"]
-        [::std::mem::offset_of!(gguf_init_params, ctx) - 8usize];
-};
-unsafe extern "C" {
-    pub fn gguf_init_empty() -> *mut gguf_context;
-}
-unsafe extern "C" {
-    pub fn gguf_init_from_file(
-        fname: *const ::std::os::raw::c_char,
-        params: gguf_init_params,
-    ) -> *mut gguf_context;
-}
-unsafe extern "C" {
-    pub fn gguf_free(ctx: *mut gguf_context);
-}
-unsafe extern "C" {
-    pub fn gguf_type_name(type_: gguf_type) -> *const ::std::os::raw::c_char;
-}
-unsafe extern "C" {
-    pub fn gguf_get_version(ctx: *const gguf_context) -> ::std::os::raw::c_int;
-}
-unsafe extern "C" {
-    pub fn gguf_get_alignment(ctx: *const gguf_context) -> usize;
-}
-unsafe extern "C" {
-    pub fn gguf_get_data_offset(ctx: *const gguf_context) -> usize;
-}
-unsafe extern "C" {
-    pub fn gguf_get_data(ctx: *const gguf_context) -> *mut ::std::os::raw::c_void;
-}
-unsafe extern "C" {
-    pub fn gguf_get_n_kv(ctx: *const gguf_context) -> ::std::os::raw::c_int;
-}
-unsafe extern "C" {
-    pub fn gguf_find_key(
-        ctx: *const gguf_context,
-        key: *const ::std::os::raw::c_char,
-    ) -> ::std::os::raw::c_int;
-}
-unsafe extern "C" {
-    pub fn gguf_get_key(
-        ctx: *const gguf_context,
-        key_id: ::std::os::raw::c_int,
-    ) -> *const ::std::os::raw::c_char;
-}
-unsafe extern "C" {
-    pub fn gguf_get_kv_type(ctx: *const gguf_context, key_id: ::std::os::raw::c_int) -> gguf_type;
-}
-unsafe extern "C" {
-    pub fn gguf_get_arr_type(ctx: *const gguf_context, key_id: ::std::os::raw::c_int) -> gguf_type;
-}
-unsafe extern "C" {
-    pub fn gguf_get_val_u8(ctx: *const gguf_context, key_id: ::std::os::raw::c_int) -> u8;
-}
-unsafe extern "C" {
-    pub fn gguf_get_val_i8(ctx: *const gguf_context, key_id: ::std::os::raw::c_int) -> i8;
-}
-unsafe extern "C" {
-    pub fn gguf_get_val_u16(ctx: *const gguf_context, key_id: ::std::os::raw::c_int) -> u16;
-}
-unsafe extern "C" {
-    pub fn gguf_get_val_i16(ctx: *const gguf_context, key_id: ::std::os::raw::c_int) -> i16;
-}
-unsafe extern "C" {
-    pub fn gguf_get_val_u32(ctx: *const gguf_context, key_id: ::std::os::raw::c_int) -> u32;
-}
-unsafe extern "C" {
-    pub fn gguf_get_val_i32(ctx: *const gguf_context, key_id: ::std::os::raw::c_int) -> i32;
-}
-unsafe extern "C" {
-    pub fn gguf_get_val_f32(ctx: *const gguf_context, key_id: ::std::os::raw::c_int) -> f32;
-}
-unsafe extern "C" {
-    pub fn gguf_get_val_u64(ctx: *const gguf_context, key_id: ::std::os::raw::c_int) -> u64;
-}
-unsafe extern "C" {
-    pub fn gguf_get_val_i64(ctx: *const gguf_context, key_id: ::std::os::raw::c_int) -> i64;
-}
-unsafe extern "C" {
-    pub fn gguf_get_val_f64(ctx: *const gguf_context, key_id: ::std::os::raw::c_int) -> f64;
-}
-unsafe extern "C" {
-    pub fn gguf_get_val_bool(ctx: *const gguf_context, key_id: ::std::os::raw::c_int) -> bool;
-}
-unsafe extern "C" {
-    pub fn gguf_get_val_str(
-        ctx: *const gguf_context,
-        key_id: ::std::os::raw::c_int,
-    ) -> *const ::std::os::raw::c_char;
-}
-unsafe extern "C" {
-    pub fn gguf_get_val_data(
-        ctx: *const gguf_context,
-        key_id: ::std::os::raw::c_int,
-    ) -> *const ::std::os::raw::c_void;
-}
-unsafe extern "C" {
-    pub fn gguf_get_arr_n(
-        ctx: *const gguf_context,
-        key_id: ::std::os::raw::c_int,
-    ) -> ::std::os::raw::c_int;
-}
-unsafe extern "C" {
-    pub fn gguf_get_arr_data(
-        ctx: *const gguf_context,
-        key_id: ::std::os::raw::c_int,
-    ) -> *const ::std::os::raw::c_void;
-}
-unsafe extern "C" {
-    pub fn gguf_get_arr_str(
-        ctx: *const gguf_context,
-        key_id: ::std::os::raw::c_int,
-        i: ::std::os::raw::c_int,
-    ) -> *const ::std::os::raw::c_char;
-}
-unsafe extern "C" {
-    pub fn gguf_get_n_tensors(ctx: *const gguf_context) -> ::std::os::raw::c_int;
-}
-unsafe extern "C" {
-    pub fn gguf_find_tensor(
-        ctx: *const gguf_context,
-        name: *const ::std::os::raw::c_char,
-    ) -> ::std::os::raw::c_int;
-}
-unsafe extern "C" {
-    pub fn gguf_get_tensor_offset(ctx: *const gguf_context, i: ::std::os::raw::c_int) -> usize;
-}
-unsafe extern "C" {
-    pub fn gguf_get_tensor_name(
-        ctx: *const gguf_context,
-        i: ::std::os::raw::c_int,
-    ) -> *mut ::std::os::raw::c_char;
-}
-unsafe extern "C" {
-    pub fn gguf_get_tensor_type(ctx: *const gguf_context, i: ::std::os::raw::c_int) -> ggml_type;
-}
-unsafe extern "C" {
-    pub fn gguf_remove_key(ctx: *mut gguf_context, key: *const ::std::os::raw::c_char);
-}
-unsafe extern "C" {
-    pub fn gguf_set_val_u8(ctx: *mut gguf_context, key: *const ::std::os::raw::c_char, val: u8);
-}
-unsafe extern "C" {
-    pub fn gguf_set_val_i8(ctx: *mut gguf_context, key: *const ::std::os::raw::c_char, val: i8);
-}
-unsafe extern "C" {
-    pub fn gguf_set_val_u16(ctx: *mut gguf_context, key: *const ::std::os::raw::c_char, val: u16);
-}
-unsafe extern "C" {
-    pub fn gguf_set_val_i16(ctx: *mut gguf_context, key: *const ::std::os::raw::c_char, val: i16);
-}
-unsafe extern "C" {
-    pub fn gguf_set_val_u32(ctx: *mut gguf_context, key: *const ::std::os::raw::c_char, val: u32);
-}
-unsafe extern "C" {
-    pub fn gguf_set_val_i32(ctx: *mut gguf_context, key: *const ::std::os::raw::c_char, val: i32);
-}
-unsafe extern "C" {
-    pub fn gguf_set_val_f32(ctx: *mut gguf_context, key: *const ::std::os::raw::c_char, val: f32);
-}
-unsafe extern "C" {
-    pub fn gguf_set_val_u64(ctx: *mut gguf_context, key: *const ::std::os::raw::c_char, val: u64);
-}
-unsafe extern "C" {
-    pub fn gguf_set_val_i64(ctx: *mut gguf_context, key: *const ::std::os::raw::c_char, val: i64);
-}
-unsafe extern "C" {
-    pub fn gguf_set_val_f64(ctx: *mut gguf_context, key: *const ::std::os::raw::c_char, val: f64);
-}
-unsafe extern "C" {
-    pub fn gguf_set_val_bool(ctx: *mut gguf_context, key: *const ::std::os::raw::c_char, val: bool);
-}
-unsafe extern "C" {
-    pub fn gguf_set_val_str(
-        ctx: *mut gguf_context,
-        key: *const ::std::os::raw::c_char,
-        val: *const ::std::os::raw::c_char,
-    );
-}
-unsafe extern "C" {
-    pub fn gguf_set_arr_data(
-        ctx: *mut gguf_context,
-        key: *const ::std::os::raw::c_char,
-        type_: gguf_type,
-        data: *const ::std::os::raw::c_void,
-        n: ::std::os::raw::c_int,
-    );
-}
-unsafe extern "C" {
-    pub fn gguf_set_arr_str(
-        ctx: *mut gguf_context,
-        key: *const ::std::os::raw::c_char,
-        data: *mut *const ::std::os::raw::c_char,
-        n: ::std::os::raw::c_int,
-    );
-}
-unsafe extern "C" {
-    pub fn gguf_set_kv(ctx: *mut gguf_context, src: *mut gguf_context);
-}
-unsafe extern "C" {
-    pub fn gguf_add_tensor(ctx: *mut gguf_context, tensor: *const ggml_tensor);
-}
-unsafe extern "C" {
-    pub fn gguf_set_tensor_type(
-        ctx: *mut gguf_context,
-        name: *const ::std::os::raw::c_char,
-        type_: ggml_type,
-    );
-}
-unsafe extern "C" {
-    pub fn gguf_set_tensor_data(
-        ctx: *mut gguf_context,
-        name: *const ::std::os::raw::c_char,
-        data: *const ::std::os::raw::c_void,
-        size: usize,
-    );
-}
-unsafe extern "C" {
-    pub fn gguf_write_to_file(
-        ctx: *const gguf_context,
-        fname: *const ::std::os::raw::c_char,
-        only_meta: bool,
-    );
-}
-unsafe extern "C" {
-    pub fn gguf_get_meta_size(ctx: *const gguf_context) -> usize;
-}
-unsafe extern "C" {
-    pub fn gguf_get_meta_data(ctx: *const gguf_context, data: *mut ::std::os::raw::c_void);
-}
 pub type ggml_to_float_t = ::std::option::Option<
     unsafe extern "C" fn(x: *const ::std::os::raw::c_void, y: *mut f32, k: i64),
 >;
@@ -3510,11 +3266,12 @@ const _: () = {
 unsafe extern "C" {
     pub fn ggml_get_type_traits(type_: ggml_type) -> *const ggml_type_traits;
 }
+pub const ggml_sched_priority_GGML_SCHED_PRIO_LOW: ggml_sched_priority = -1;
 pub const ggml_sched_priority_GGML_SCHED_PRIO_NORMAL: ggml_sched_priority = 0;
 pub const ggml_sched_priority_GGML_SCHED_PRIO_MEDIUM: ggml_sched_priority = 1;
 pub const ggml_sched_priority_GGML_SCHED_PRIO_HIGH: ggml_sched_priority = 2;
 pub const ggml_sched_priority_GGML_SCHED_PRIO_REALTIME: ggml_sched_priority = 3;
-pub type ggml_sched_priority = ::std::os::raw::c_uint;
+pub type ggml_sched_priority = ::std::os::raw::c_int;
 #[repr(C)]
 #[derive(Debug, Copy, Clone)]
 pub struct ggml_threadpool_params {
@@ -3603,7 +3360,7 @@ unsafe extern "C" {
     pub fn ggml_tallocr_new(buffer: ggml_backend_buffer_t) -> ggml_tallocr;
 }
 unsafe extern "C" {
-    pub fn ggml_tallocr_alloc(talloc: *mut ggml_tallocr, tensor: *mut ggml_tensor);
+    pub fn ggml_tallocr_alloc(talloc: *mut ggml_tallocr, tensor: *mut ggml_tensor) -> ggml_status;
 }
 #[repr(C)]
 #[derive(Debug, Copy, Clone)]
@@ -3694,7 +3451,7 @@ unsafe extern "C" {
 unsafe extern "C" {
     pub fn ggml_backend_buft_get_alloc_size(
         buft: ggml_backend_buffer_type_t,
-        tensor: *mut ggml_tensor,
+        tensor: *const ggml_tensor,
     ) -> usize;
 }
 unsafe extern "C" {
@@ -3725,7 +3482,10 @@ unsafe extern "C" {
     pub fn ggml_backend_buffer_get_size(buffer: ggml_backend_buffer_t) -> usize;
 }
 unsafe extern "C" {
-    pub fn ggml_backend_buffer_init_tensor(buffer: ggml_backend_buffer_t, tensor: *mut ggml_tensor);
+    pub fn ggml_backend_buffer_init_tensor(
+        buffer: ggml_backend_buffer_t,
+        tensor: *mut ggml_tensor,
+    ) -> ggml_status;
 }
 unsafe extern "C" {
     pub fn ggml_backend_buffer_get_alignment(buffer: ggml_backend_buffer_t) -> usize;
@@ -3736,7 +3496,7 @@ unsafe extern "C" {
 unsafe extern "C" {
     pub fn ggml_backend_buffer_get_alloc_size(
         buffer: ggml_backend_buffer_t,
-        tensor: *mut ggml_tensor,
+        tensor: *const ggml_tensor,
     ) -> usize;
 }
 unsafe extern "C" {
@@ -4066,6 +3826,9 @@ pub type ggml_backend_get_features_t = ::std::option::Option<
     unsafe extern "C" fn(reg: ggml_backend_reg_t) -> *mut ggml_backend_feature,
 >;
 unsafe extern "C" {
+    pub fn ggml_backend_device_register(device: ggml_backend_dev_t);
+}
+unsafe extern "C" {
     pub fn ggml_backend_reg_count() -> usize;
 }
 unsafe extern "C" {
@@ -4133,6 +3896,7 @@ unsafe extern "C" {
         n_backends: ::std::os::raw::c_int,
         graph_size: usize,
         parallel: bool,
+        op_offload: bool,
     ) -> ggml_backend_sched_t;
 }
 unsafe extern "C" {
@@ -4262,10 +4026,10 @@ unsafe extern "C" {
         buffer: ggml_backend_buffer_t,
         tensor: *mut ggml_tensor,
         addr: *mut ::std::os::raw::c_void,
-    );
+    ) -> ggml_status;
 }
 unsafe extern "C" {
-    pub fn ggml_backend_view_init(tensor: *mut ggml_tensor);
+    pub fn ggml_backend_view_init(tensor: *mut ggml_tensor) -> ggml_status;
 }
 unsafe extern "C" {
     pub fn ggml_backend_cpu_buffer_from_ptr(
@@ -4427,6 +4191,9 @@ unsafe extern "C" {
     pub fn ggml_cpu_has_avx2() -> ::std::os::raw::c_int;
 }
 unsafe extern "C" {
+    pub fn ggml_cpu_has_bmi2() -> ::std::os::raw::c_int;
+}
+unsafe extern "C" {
     pub fn ggml_cpu_has_f16c() -> ::std::os::raw::c_int;
 }
 unsafe extern "C" {
@@ -4469,10 +4236,16 @@ unsafe extern "C" {
     pub fn ggml_cpu_get_sve_cnt() -> ::std::os::raw::c_int;
 }
 unsafe extern "C" {
+    pub fn ggml_cpu_has_sme() -> ::std::os::raw::c_int;
+}
+unsafe extern "C" {
     pub fn ggml_cpu_has_riscv_v() -> ::std::os::raw::c_int;
 }
 unsafe extern "C" {
     pub fn ggml_cpu_has_vsx() -> ::std::os::raw::c_int;
+}
+unsafe extern "C" {
+    pub fn ggml_cpu_has_vxe() -> ::std::os::raw::c_int;
 }
 unsafe extern "C" {
     pub fn ggml_cpu_has_wasm_simd() -> ::std::os::raw::c_int;
@@ -4546,6 +4319,18 @@ unsafe extern "C" {
 }
 unsafe extern "C" {
     pub fn ggml_backend_cpu_reg() -> ggml_backend_reg_t;
+}
+unsafe extern "C" {
+    pub fn ggml_cpu_fp32_to_fp16(arg1: *const f32, arg2: *mut ggml_fp16_t, arg3: i64);
+}
+unsafe extern "C" {
+    pub fn ggml_cpu_fp16_to_fp32(arg1: *const ggml_fp16_t, arg2: *mut f32, arg3: i64);
+}
+unsafe extern "C" {
+    pub fn ggml_cpu_fp32_to_bf16(arg1: *const f32, arg2: *mut ggml_bf16_t, arg3: i64);
+}
+unsafe extern "C" {
+    pub fn ggml_cpu_bf16_to_fp32(arg1: *const ggml_bf16_t, arg2: *mut f32, arg3: i64);
 }
 #[repr(C)]
 #[derive(Debug, Copy, Clone)]
@@ -4736,6 +4521,33 @@ const _: () = {
         [::std::mem::offset_of!(whisper_grammar_element, type_) - 0usize];
     ["Offset of field: whisper_grammar_element::value"]
         [::std::mem::offset_of!(whisper_grammar_element, value) - 4usize];
+};
+#[repr(C)]
+#[derive(Debug, Copy, Clone)]
+pub struct whisper_vad_params {
+    pub threshold: f32,
+    pub min_speech_duration_ms: ::std::os::raw::c_int,
+    pub min_silence_duration_ms: ::std::os::raw::c_int,
+    pub max_speech_duration_s: f32,
+    pub speech_pad_ms: ::std::os::raw::c_int,
+    pub samples_overlap: f32,
+}
+#[allow(clippy::unnecessary_operation, clippy::identity_op)]
+const _: () = {
+    ["Size of whisper_vad_params"][::std::mem::size_of::<whisper_vad_params>() - 24usize];
+    ["Alignment of whisper_vad_params"][::std::mem::align_of::<whisper_vad_params>() - 4usize];
+    ["Offset of field: whisper_vad_params::threshold"]
+        [::std::mem::offset_of!(whisper_vad_params, threshold) - 0usize];
+    ["Offset of field: whisper_vad_params::min_speech_duration_ms"]
+        [::std::mem::offset_of!(whisper_vad_params, min_speech_duration_ms) - 4usize];
+    ["Offset of field: whisper_vad_params::min_silence_duration_ms"]
+        [::std::mem::offset_of!(whisper_vad_params, min_silence_duration_ms) - 8usize];
+    ["Offset of field: whisper_vad_params::max_speech_duration_s"]
+        [::std::mem::offset_of!(whisper_vad_params, max_speech_duration_s) - 12usize];
+    ["Offset of field: whisper_vad_params::speech_pad_ms"]
+        [::std::mem::offset_of!(whisper_vad_params, speech_pad_ms) - 16usize];
+    ["Offset of field: whisper_vad_params::samples_overlap"]
+        [::std::mem::offset_of!(whisper_vad_params, samples_overlap) - 20usize];
 };
 unsafe extern "C" {
     pub fn whisper_init_from_file_with_params(
@@ -5176,6 +4988,9 @@ pub struct whisper_full_params {
     pub n_grammar_rules: usize,
     pub i_start_rule: usize,
     pub grammar_penalty: f32,
+    pub vad: bool,
+    pub vad_model_path: *const ::std::os::raw::c_char,
+    pub vad_params: whisper_vad_params,
 }
 #[repr(C)]
 #[derive(Debug, Copy, Clone)]
@@ -5210,7 +5025,7 @@ const _: () = {
 };
 #[allow(clippy::unnecessary_operation, clippy::identity_op)]
 const _: () = {
-    ["Size of whisper_full_params"][::std::mem::size_of::<whisper_full_params>() - 264usize];
+    ["Size of whisper_full_params"][::std::mem::size_of::<whisper_full_params>() - 296usize];
     ["Alignment of whisper_full_params"][::std::mem::align_of::<whisper_full_params>() - 8usize];
     ["Offset of field: whisper_full_params::strategy"]
         [::std::mem::offset_of!(whisper_full_params, strategy) - 0usize];
@@ -5318,6 +5133,12 @@ const _: () = {
         [::std::mem::offset_of!(whisper_full_params, i_start_rule) - 248usize];
     ["Offset of field: whisper_full_params::grammar_penalty"]
         [::std::mem::offset_of!(whisper_full_params, grammar_penalty) - 256usize];
+    ["Offset of field: whisper_full_params::vad"]
+        [::std::mem::offset_of!(whisper_full_params, vad) - 260usize];
+    ["Offset of field: whisper_full_params::vad_model_path"]
+        [::std::mem::offset_of!(whisper_full_params, vad_model_path) - 264usize];
+    ["Offset of field: whisper_full_params::vad_params"]
+        [::std::mem::offset_of!(whisper_full_params, vad_params) - 272usize];
 };
 unsafe extern "C" {
     pub fn whisper_context_default_params_by_ref() -> *mut whisper_context_params;
@@ -5488,6 +5309,104 @@ unsafe extern "C" {
         i_token: ::std::os::raw::c_int,
     ) -> f32;
 }
+#[repr(C)]
+#[derive(Debug, Copy, Clone)]
+pub struct whisper_vad_context {
+    _unused: [u8; 0],
+}
+unsafe extern "C" {
+    pub fn whisper_vad_default_params() -> whisper_vad_params;
+}
+#[repr(C)]
+#[derive(Debug, Copy, Clone)]
+pub struct whisper_vad_context_params {
+    pub n_threads: ::std::os::raw::c_int,
+    pub use_gpu: bool,
+    pub gpu_device: ::std::os::raw::c_int,
+}
+#[allow(clippy::unnecessary_operation, clippy::identity_op)]
+const _: () = {
+    ["Size of whisper_vad_context_params"]
+        [::std::mem::size_of::<whisper_vad_context_params>() - 12usize];
+    ["Alignment of whisper_vad_context_params"]
+        [::std::mem::align_of::<whisper_vad_context_params>() - 4usize];
+    ["Offset of field: whisper_vad_context_params::n_threads"]
+        [::std::mem::offset_of!(whisper_vad_context_params, n_threads) - 0usize];
+    ["Offset of field: whisper_vad_context_params::use_gpu"]
+        [::std::mem::offset_of!(whisper_vad_context_params, use_gpu) - 4usize];
+    ["Offset of field: whisper_vad_context_params::gpu_device"]
+        [::std::mem::offset_of!(whisper_vad_context_params, gpu_device) - 8usize];
+};
+unsafe extern "C" {
+    pub fn whisper_vad_default_context_params() -> whisper_vad_context_params;
+}
+unsafe extern "C" {
+    pub fn whisper_vad_init_from_file_with_params(
+        path_model: *const ::std::os::raw::c_char,
+        params: whisper_vad_context_params,
+    ) -> *mut whisper_vad_context;
+}
+unsafe extern "C" {
+    pub fn whisper_vad_init_with_params(
+        loader: *mut whisper_model_loader,
+        params: whisper_vad_context_params,
+    ) -> *mut whisper_vad_context;
+}
+unsafe extern "C" {
+    pub fn whisper_vad_detect_speech(
+        vctx: *mut whisper_vad_context,
+        samples: *const f32,
+        n_samples: ::std::os::raw::c_int,
+    ) -> bool;
+}
+unsafe extern "C" {
+    pub fn whisper_vad_n_probs(vctx: *mut whisper_vad_context) -> ::std::os::raw::c_int;
+}
+unsafe extern "C" {
+    pub fn whisper_vad_probs(vctx: *mut whisper_vad_context) -> *mut f32;
+}
+#[repr(C)]
+#[derive(Debug, Copy, Clone)]
+pub struct whisper_vad_segments {
+    _unused: [u8; 0],
+}
+unsafe extern "C" {
+    pub fn whisper_vad_segments_from_probs(
+        vctx: *mut whisper_vad_context,
+        params: whisper_vad_params,
+    ) -> *mut whisper_vad_segments;
+}
+unsafe extern "C" {
+    pub fn whisper_vad_segments_from_samples(
+        vctx: *mut whisper_vad_context,
+        params: whisper_vad_params,
+        samples: *const f32,
+        n_samples: ::std::os::raw::c_int,
+    ) -> *mut whisper_vad_segments;
+}
+unsafe extern "C" {
+    pub fn whisper_vad_segments_n_segments(
+        segments: *mut whisper_vad_segments,
+    ) -> ::std::os::raw::c_int;
+}
+unsafe extern "C" {
+    pub fn whisper_vad_segments_get_segment_t0(
+        segments: *mut whisper_vad_segments,
+        i_segment: ::std::os::raw::c_int,
+    ) -> f32;
+}
+unsafe extern "C" {
+    pub fn whisper_vad_segments_get_segment_t1(
+        segments: *mut whisper_vad_segments,
+        i_segment: ::std::os::raw::c_int,
+    ) -> f32;
+}
+unsafe extern "C" {
+    pub fn whisper_vad_free_segments(segments: *mut whisper_vad_segments);
+}
+unsafe extern "C" {
+    pub fn whisper_vad_free(ctx: *mut whisper_vad_context);
+}
 unsafe extern "C" {
     pub fn whisper_bench_memcpy(n_threads: ::std::os::raw::c_int) -> ::std::os::raw::c_int;
 }
@@ -5510,6 +5429,12 @@ unsafe extern "C" {
 unsafe extern "C" {
     pub fn whisper_full_get_segment_no_speech_prob(
         ctx: *mut whisper_context,
+        i_segment: ::std::os::raw::c_int,
+    ) -> f32;
+}
+unsafe extern "C" {
+    pub fn whisper_full_get_segment_no_speech_prob_from_state(
+        state: *mut whisper_state,
         i_segment: ::std::os::raw::c_int,
     ) -> f32;
 }
