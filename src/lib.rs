@@ -15,6 +15,7 @@ mod whisper_grammar;
 mod whisper_logging_hook;
 mod whisper_params;
 mod whisper_state;
+mod whisper_vad;
 
 pub use common_logging::GGMLLogLevel;
 pub use error::WhisperError;
@@ -31,6 +32,7 @@ pub use whisper_params::{FullParams, SamplingStrategy, SegmentCallbackData};
 #[cfg(feature = "raw-api")]
 pub use whisper_rs_sys;
 pub use whisper_state::WhisperState;
+pub use whisper_vad::*;
 
 pub type WhisperSysContext = whisper_rs_sys::whisper_context;
 pub type WhisperSysState = whisper_rs_sys::whisper_state;

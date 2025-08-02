@@ -1,4 +1,5 @@
 use crate::whisper_grammar::WhisperGrammarElement;
+use crate::whisper_vad::WhisperVadParams;
 use std::ffi::{c_char, c_float, c_int, CString};
 use std::marker::PhantomData;
 use std::sync::Arc;
@@ -799,6 +800,39 @@ impl<'a, 'b> FullParams<'a, 'b> {
         self.fp.initial_prompt = CString::new(initial_prompt)
             .expect("Initial prompt contains null byte")
             .into_raw() as *const c_char;
+    }
+
+    /// Enable or disable VAD.
+    ///
+    /// # Panics
+    /// This method will panic if `vad_model_path` is not set prior to enabling VAD.
+    pub fn enable_vad(&mut self, vad: bool) {
+        if vad && self.fp.vad_model_path.is_null() {
+            panic!("Set a VAD model path before calling enable_vad");
+        }
+
+        self.fp.vad = vad;
+    }
+
+    /// Set the path where a VAD model can be found. Passing `None` will clear it and disable VAD.
+    ///
+    /// # Panics
+    /// This method will panic if `vad_model_path` contains a null byte.
+    pub fn set_vad_model_path(&mut self, vad_model_path: Option<&str>) {
+        self.fp.vad_model_path = if let Some(vad_model_path) = vad_model_path {
+            CString::new(vad_model_path)
+                .expect("VAD model path contains null byte")
+                .into_raw() as *const c_char
+        } else {
+            self.fp.vad = false;
+
+            std::ptr::null()
+        };
+    }
+
+    /// Replace the VAD model parameters.
+    pub fn set_vad_params(&mut self, params: WhisperVadParams) {
+        self.fp.vad_params = params.into_inner();
     }
 }
 
