@@ -31,14 +31,14 @@ pub use whisper_grammar::{WhisperGrammarElement, WhisperGrammarElementType};
 pub use whisper_params::{FullParams, SamplingStrategy, SegmentCallbackData};
 #[cfg(feature = "raw-api")]
 pub use whisper_rs_sys;
-pub use whisper_state::WhisperState;
+pub use whisper_state::{WhisperSegment, WhisperState, WhisperStateSegmentIterator, WhisperToken};
 pub use whisper_vad::*;
 
 pub type WhisperSysContext = whisper_rs_sys::whisper_context;
 pub type WhisperSysState = whisper_rs_sys::whisper_state;
 
 pub type WhisperTokenData = whisper_rs_sys::whisper_token_data;
-pub type WhisperToken = whisper_rs_sys::whisper_token;
+pub type WhisperTokenId = whisper_rs_sys::whisper_token;
 pub type WhisperNewSegmentCallback = whisper_rs_sys::whisper_new_segment_callback;
 pub type WhisperStartEncoderCallback = whisper_rs_sys::whisper_encoder_begin_callback;
 pub type WhisperProgressCallback = whisper_rs_sys::whisper_progress_callback;
