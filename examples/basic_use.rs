@@ -13,7 +13,6 @@ fn main() {
     let wav_path = std::env::args()
         .nth(2)
         .expect("Please specify path to wav file as argument 2");
-    let language = "en";
 
     let samples: Vec<i16> = hound::WavReader::open(wav_path)
         .unwrap()
@@ -24,18 +23,24 @@ fn main() {
     // load a context and model
     let ctx = WhisperContext::new_with_params(&model_path, WhisperContextParameters::default())
         .expect("failed to load model");
-
+    // create a state attached to the model
     let mut state = ctx.create_state().expect("failed to create state");
 
+    // the sampling strategy will determine how accurate your final output is going to be
+    // typically BeamSearch is more accurate at the cost of significantly increased CPU time
     let mut params = FullParams::new(SamplingStrategy::BeamSearch {
+        // whisper.cpp defaults to a beam size of 5, a reasonable default
         beam_size: 5,
+        // this parameter is currently unused but defaults to -1.0
         patience: -1.0,
     });
 
-    // and set the language to translate to to english
-    params.set_language(Some(&language));
+    // and set the language to translate to as english
+    params.set_language(Some("en"));
 
     // we also explicitly disable anything that prints to stdout
+    // despite all of this you will still get things printing to stdout,
+    // be prepared to deal with it
     params.set_print_special(false);
     params.set_print_progress(false);
     params.set_print_realtime(false);
@@ -61,8 +66,11 @@ fn main() {
     for segment in state.as_iter() {
         println!(
             "[{} - {}]: {}",
+            // these timestamps are in centiseconds (10s of milliseconds)
             segment.start_timestamp(),
             segment.end_timestamp(),
+            // this default Display implementation will result in any invalid UTF-8
+            // being converted into the Unicode replacement character, U+FFFD
             segment
         );
     }

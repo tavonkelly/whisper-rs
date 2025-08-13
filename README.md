@@ -27,7 +27,10 @@ fn main() {
     ).expect("failed to load model");
 
     // create a params object
-    let params = FullParams::new(SamplingStrategy::Greedy { best_of: 1 });
+    let params = FullParams::new(SamplingStrategy::BeamSearch {
+        beam_size: 5,
+        patience: -1.0,
+    });
 
     // assume we have a buffer of audio data
     // here we'll make a fake one, floating point samples, 32 bit, 16KHz, mono
@@ -40,20 +43,16 @@ fn main() {
         .expect("failed to run model");
 
     // fetch the results
-    let num_segments = state
-        .full_n_segments()
-        .expect("failed to get number of segments");
-    for i in 0..num_segments {
-        let segment = state
-            .full_get_segment_text(i)
-            .expect("failed to get segment");
-        let start_timestamp = state
-            .full_get_segment_t0(i)
-            .expect("failed to get segment start timestamp");
-        let end_timestamp = state
-            .full_get_segment_t1(i)
-            .expect("failed to get segment end timestamp");
-        println!("[{} - {}]: {}", start_timestamp, end_timestamp, segment);
+    for segment in state.as_iter() {
+        println!(
+            "[{} - {}]: {}",
+            // note start and end timestamps are in centiseconds
+            // (10s of milliseconds)
+            segment.start_timestamp(),
+            segment.end_timestamp(),
+            // the Display impl for WhisperSegment will replace invalid UTF-8 with the Unicode replacement character
+            segment
+        );
     }
 }
 ```
