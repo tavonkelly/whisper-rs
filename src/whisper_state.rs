@@ -252,8 +252,8 @@ impl WhisperState {
     ///
     /// # C++ equivalent
     /// `int whisper_n_len_from_state(struct whisper_context * ctx)`
-    pub fn n_len(&self) -> Result<c_int, WhisperError> {
-        Ok(unsafe { whisper_rs_sys::whisper_n_len_from_state(self.ptr) })
+    pub fn n_len(&self) -> c_int {
+        unsafe { whisper_rs_sys::whisper_n_len_from_state(self.ptr) }
     }
 
     /// Get n_vocab.
