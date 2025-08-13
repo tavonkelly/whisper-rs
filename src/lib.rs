@@ -1,6 +1,11 @@
 #![allow(clippy::uninlined_format_args)]
 #![cfg_attr(test, feature(test))]
 
+//! Most users will be looking for nothing more than [`WhisperState::full`] to run a full transcription pipeline.
+//!
+//! You can get a [`WhisperState`] by first creating a [`WhisperContext`] using [`WhisperContext::new_with_params`],
+//! and then calling [`WhisperContext::create_state`].
+
 #[cfg(feature = "vulkan")]
 pub mod vulkan;
 
