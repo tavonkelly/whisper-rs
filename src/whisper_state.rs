@@ -252,7 +252,6 @@ impl WhisperState {
     ///
     /// # C++ equivalent
     /// `int whisper_n_len_from_state(struct whisper_context * ctx)`
-    #[inline]
     pub fn n_len(&self) -> Result<c_int, WhisperError> {
         Ok(unsafe { whisper_rs_sys::whisper_n_len_from_state(self.ptr) })
     }
@@ -264,7 +263,6 @@ impl WhisperState {
     ///
     /// # C++ equivalent
     /// `int whisper_n_vocab        (struct whisper_context * ctx)`
-    #[inline]
     pub fn n_vocab(&self) -> c_int {
         unsafe { whisper_rs_sys::whisper_n_vocab(self.ctx.ctx) }
     }
@@ -317,7 +315,6 @@ impl WhisperState {
     ///
     /// # C++ equivalent
     /// `int whisper_full_n_segments(struct whisper_context * ctx)`
-    #[inline]
     pub fn full_n_segments(&self) -> c_int {
         unsafe { whisper_rs_sys::whisper_full_n_segments_from_state(self.ptr) }
     }
@@ -326,7 +323,6 @@ impl WhisperState {
     ///
     /// # C++ equivalent
     /// `int whisper_full_lang_id_from_state(struct whisper_state * state);`
-    #[inline]
     pub fn full_lang_id_from_state(&self) -> c_int {
         unsafe { whisper_rs_sys::whisper_full_lang_id_from_state(self.ptr) }
     }
