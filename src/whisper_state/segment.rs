@@ -209,15 +209,15 @@ impl<'a, 'b> WhisperToken<'a, 'b> {
     /// [`WhisperTokenId`]
     ///
     /// # C++ equivalent
-    /// `whisper_token whisper_full_get_token_id (struct whisper_context * ctx, int i_segment, int i_token)`
-    pub fn token_id(&self) -> Result<WhisperTokenId, WhisperError> {
-        Ok(unsafe {
+    /// `whisper_token whisper_full_get_token_id(struct whisper_context * ctx, int i_segment, int i_token)`
+    pub fn token_id(&self) -> WhisperTokenId {
+        unsafe {
             whisper_rs_sys::whisper_full_get_token_id_from_state(
                 self.segment.state.ptr,
                 self.segment.segment_idx,
                 self.token_idx,
             )
-        })
+        }
     }
 
     /// Get token data for this token in its segment.
@@ -227,14 +227,14 @@ impl<'a, 'b> WhisperToken<'a, 'b> {
     ///
     /// # C++ equivalent
     /// `whisper_token_data whisper_full_get_token_data(struct whisper_context * ctx, int i_segment, int i_token)`
-    pub fn token_data(&self) -> Result<WhisperTokenData, WhisperError> {
-        Ok(unsafe {
+    pub fn token_data(&self) -> WhisperTokenData {
+        unsafe {
             whisper_rs_sys::whisper_full_get_token_data_from_state(
                 self.segment.state.ptr,
                 self.segment.segment_idx,
                 self.token_idx,
             )
-        })
+        }
     }
 
     /// Get the probability of this token in its segment.
@@ -244,14 +244,14 @@ impl<'a, 'b> WhisperToken<'a, 'b> {
     ///
     /// # C++ equivalent
     /// `float whisper_full_get_token_p(struct whisper_context * ctx, int i_segment, int i_token)`
-    pub fn token_probability(&self) -> Result<f32, WhisperError> {
-        Ok(unsafe {
+    pub fn token_probability(&self) -> f32 {
+        unsafe {
             whisper_rs_sys::whisper_full_get_token_p_from_state(
                 self.segment.state.ptr,
                 self.segment.segment_idx,
                 self.token_idx,
             )
-        })
+        }
     }
 
     fn to_raw_cstr(&self) -> Result<&CStr, WhisperError> {
