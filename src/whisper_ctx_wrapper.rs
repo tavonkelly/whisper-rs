@@ -421,7 +421,7 @@ impl WhisperContext {
             Err(WhisperError::InitError)
         } else {
             // SAFETY: this is known to be a valid pointer to a `whisper_state` struct
-            Ok(WhisperState::new(self.ctx.clone(), state))
+            Ok(unsafe { WhisperState::new(self.ctx.clone(), state) })
         }
     }
 }
