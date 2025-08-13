@@ -386,6 +386,7 @@ impl<'a, 'b> FullParams<'a, 'b> {
     /// Do not use this function unless you know what you are doing.
     /// * Be careful not to mutate the state of the whisper_context pointer returned in the callback.
     ///   This could cause undefined behavior, as this violates the thread-safety guarantees of the underlying C library.
+    ///
     /// **Warning** Can't be used with DTW. DTW will produce inconsistent callback invocation
     ///
     /// Defaults to None.
@@ -443,14 +444,13 @@ impl<'a, 'b> FullParams<'a, 'b> {
                     let t0 = whisper_rs_sys::whisper_full_get_segment_t0_from_state(state, i);
                     let t1 = whisper_rs_sys::whisper_full_get_segment_t1_from_state(state, i);
 
-                    match text.to_str() {
-                        Ok(n) => user_data(SegmentCallbackData {
+                    if let Ok(n) = text.to_str() {
+                        user_data(SegmentCallbackData {
                             segment: i,
                             start_timestamp: t0,
                             end_timestamp: t1,
                             text: n.to_string(),
-                        }),
-                        Err(_) => {}
+                        })
                     }
                 }
             }
