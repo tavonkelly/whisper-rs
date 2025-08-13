@@ -29,7 +29,10 @@ impl Drop for WhisperState {
 }
 
 impl WhisperState {
-    pub(crate) fn new(
+    /// # Safety
+    /// * `ptr` must be non-null
+    /// * `ptr` must be a valid pointer to a `whisper_state`.
+    pub(crate) unsafe fn new(
         ctx: Arc<WhisperInnerContext>,
         ptr: *mut whisper_rs_sys::whisper_state,
     ) -> Self {
