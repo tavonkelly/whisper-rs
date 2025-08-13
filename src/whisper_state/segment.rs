@@ -80,7 +80,13 @@ impl<'a> WhisperSegment<'a> {
         }
     }
 
-    /// Get the no_speech probability for the specified segment
+    /// Get the no_speech probability for the specified segment.
+    ///
+    /// # Returns
+    /// `f32`
+    ///
+    /// # C++ equivalent
+    /// `float whisper_full_get_segment_no_speech_prob_from_state(struct whisper_state * state, int i_segment)`
     pub fn no_speech_probability(&self) -> f32 {
         unsafe {
             whisper_rs_sys::whisper_full_get_segment_no_speech_prob_from_state(
