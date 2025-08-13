@@ -76,7 +76,6 @@ impl WhisperContext {
     ///
     /// # C++ equivalent
     /// `int whisper_n_vocab        (struct whisper_context * ctx)`
-    #[inline]
     pub fn n_vocab(&self) -> c_int {
         self.ctx.n_vocab()
     }
@@ -88,7 +87,6 @@ impl WhisperContext {
     ///
     /// # C++ equivalent
     /// `int whisper_n_text_ctx     (struct whisper_context * ctx);`
-    #[inline]
     pub fn n_text_ctx(&self) -> c_int {
         self.ctx.n_text_ctx()
     }
@@ -100,7 +98,6 @@ impl WhisperContext {
     ///
     /// # C++ equivalent
     /// `int whisper_n_audio_ctx     (struct whisper_context * ctx);`
-    #[inline]
     pub fn n_audio_ctx(&self) -> c_int {
         self.ctx.n_audio_ctx()
     }
@@ -109,7 +106,6 @@ impl WhisperContext {
     ///
     /// # C++ equivalent
     /// `int whisper_is_multilingual(struct whisper_context * ctx)`
-    #[inline]
     pub fn is_multilingual(&self) -> bool {
         self.ctx.is_multilingual()
     }
@@ -121,7 +117,6 @@ impl WhisperContext {
     ///
     /// # C++ equivalent
     /// `int whisper_model_n_vocab      (struct whisper_context * ctx);`
-    #[inline]
     pub fn model_n_vocab(&self) -> c_int {
         self.ctx.model_n_vocab()
     }
@@ -133,7 +128,6 @@ impl WhisperContext {
     ///
     /// # C++ equivalent
     /// `int whisper_model_n_audio_ctx    (struct whisper_context * ctx)`
-    #[inline]
     pub fn model_n_audio_ctx(&self) -> c_int {
         self.ctx.model_n_audio_ctx()
     }
@@ -145,7 +139,6 @@ impl WhisperContext {
     ///
     /// # C++ equivalent
     /// `int whisper_model_n_audio_state(struct whisper_context * ctx);`
-    #[inline]
     pub fn model_n_audio_state(&self) -> c_int {
         self.ctx.model_n_audio_state()
     }
@@ -157,7 +150,6 @@ impl WhisperContext {
     ///
     /// # C++ equivalent
     /// `int whisper_model_n_audio_head (struct whisper_context * ctx);`
-    #[inline]
     pub fn model_n_audio_head(&self) -> c_int {
         self.ctx.model_n_audio_head()
     }
@@ -169,7 +161,6 @@ impl WhisperContext {
     ///
     /// # C++ equivalent
     /// `int whisper_model_n_audio_layer(struct whisper_context * ctx);`
-    #[inline]
     pub fn model_n_audio_layer(&self) -> c_int {
         self.ctx.model_n_audio_layer()
     }
@@ -181,7 +172,6 @@ impl WhisperContext {
     ///
     /// # C++ equivalent
     /// `int whisper_model_n_text_ctx     (struct whisper_context * ctx)`
-    #[inline]
     pub fn model_n_text_ctx(&self) -> c_int {
         self.ctx.model_n_text_ctx()
     }
@@ -193,7 +183,6 @@ impl WhisperContext {
     ///
     /// # C++ equivalent
     /// `int whisper_model_n_text_state (struct whisper_context * ctx);`
-    #[inline]
     pub fn model_n_text_state(&self) -> c_int {
         self.ctx.model_n_text_state()
     }
@@ -205,7 +194,6 @@ impl WhisperContext {
     ///
     /// # C++ equivalent
     /// `int whisper_model_n_text_head  (struct whisper_context * ctx);`
-    #[inline]
     pub fn model_n_text_head(&self) -> c_int {
         self.ctx.model_n_text_head()
     }
@@ -217,7 +205,6 @@ impl WhisperContext {
     ///
     /// # C++ equivalent
     /// `int whisper_model_n_text_layer (struct whisper_context * ctx);`
-    #[inline]
     pub fn model_n_text_layer(&self) -> c_int {
         self.ctx.model_n_text_layer()
     }
@@ -229,7 +216,6 @@ impl WhisperContext {
     ///
     /// # C++ equivalent
     /// `int whisper_model_n_mels       (struct whisper_context * ctx);`
-    #[inline]
     pub fn model_n_mels(&self) -> c_int {
         self.ctx.model_n_mels()
     }
@@ -241,7 +227,6 @@ impl WhisperContext {
     ///
     /// # C++ equivalent
     /// `int whisper_model_ftype          (struct whisper_context * ctx);`
-    #[inline]
     pub fn model_ftype(&self) -> c_int {
         self.ctx.model_ftype()
     }
@@ -253,7 +238,6 @@ impl WhisperContext {
     ///
     /// # C++ equivalent
     /// `int whisper_model_type         (struct whisper_context * ctx);`
-    #[inline]
     pub fn model_type(&self) -> c_int {
         self.ctx.model_type()
     }
@@ -300,7 +284,6 @@ impl WhisperContext {
     ///
     /// # C++ equivalent
     /// `whisper_token whisper_token_eot (struct whisper_context * ctx)`
-    #[inline]
     pub fn token_eot(&self) -> WhisperTokenId {
         self.ctx.token_eot()
     }
@@ -309,7 +292,6 @@ impl WhisperContext {
     ///
     /// # C++ equivalent
     /// `whisper_token whisper_token_sot (struct whisper_context * ctx)`
-    #[inline]
     pub fn token_sot(&self) -> WhisperTokenId {
         self.ctx.token_sot()
     }
@@ -318,7 +300,6 @@ impl WhisperContext {
     ///
     /// # C++ equivalent
     /// `whisper_token whisper_token_solm(struct whisper_context * ctx)`
-    #[inline]
     pub fn token_solm(&self) -> WhisperTokenId {
         self.ctx.token_solm()
     }
@@ -327,7 +308,6 @@ impl WhisperContext {
     ///
     /// # C++ equivalent
     /// `whisper_token whisper_token_prev(struct whisper_context * ctx)`
-    #[inline]
     pub fn token_prev(&self) -> WhisperTokenId {
         self.ctx.token_prev()
     }
@@ -336,7 +316,6 @@ impl WhisperContext {
     ///
     /// # C++ equivalent
     /// `whisper_token whisper_token_nosp(struct whisper_context * ctx)`
-    #[inline]
     pub fn token_nosp(&self) -> WhisperTokenId {
         self.ctx.token_nosp()
     }
@@ -345,7 +324,6 @@ impl WhisperContext {
     ///
     /// # C++ equivalent
     /// `whisper_token whisper_token_not (struct whisper_context * ctx)`
-    #[inline]
     pub fn token_not(&self) -> WhisperTokenId {
         self.ctx.token_not()
     }
@@ -354,7 +332,6 @@ impl WhisperContext {
     ///
     /// # C++ equivalent
     /// `whisper_token whisper_token_beg (struct whisper_context * ctx)`
-    #[inline]
     pub fn token_beg(&self) -> WhisperTokenId {
         self.ctx.token_beg()
     }
@@ -366,7 +343,6 @@ impl WhisperContext {
     ///
     /// # C++ equivalent
     /// `whisper_token whisper_token_lang(struct whisper_context * ctx, int lang_id)`
-    #[inline]
     pub fn token_lang(&self, lang_id: c_int) -> WhisperTokenId {
         self.ctx.token_lang(lang_id)
     }
@@ -375,7 +351,6 @@ impl WhisperContext {
     ///
     /// # C++ equivalent
     /// `void whisper_print_timings(struct whisper_context * ctx)`
-    #[inline]
     pub fn print_timings(&self) {
         self.ctx.print_timings()
     }
@@ -384,7 +359,6 @@ impl WhisperContext {
     ///
     /// # C++ equivalent
     /// `void whisper_reset_timings(struct whisper_context * ctx)`
-    #[inline]
     pub fn reset_timings(&self) {
         self.ctx.reset_timings()
     }
