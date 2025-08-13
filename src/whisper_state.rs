@@ -353,7 +353,7 @@ impl WhisperState {
     }
 
     /// Get an iterator over all segments.
-    pub fn as_iter(&self) -> WhisperStateSegmentIterator {
+    pub fn as_iter(&self) -> WhisperStateSegmentIterator<'_> {
         WhisperStateSegmentIterator::new(self)
     }
 }
