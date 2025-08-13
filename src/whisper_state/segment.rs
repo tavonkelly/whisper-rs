@@ -153,13 +153,18 @@ impl<'a> WhisperSegment<'a> {
         token_idx >= 0 && token_idx < self.token_count
     }
 
+    /// Get the token at the specified index. Returns `None` if out of bounds for this state.
     pub fn get_token(&self, token: c_int) -> Option<WhisperToken<'_, '_>> {
         self.token_in_bounds(token)
+            // SAFETY: we've just asserted that this token is in bounds
             .then(|| unsafe { WhisperToken::new_unchecked(self, token) })
     }
 
+    /// The same as [`Self::get_token`] but without any bounds check.
+    ///
     /// # Safety
     /// You must ensure `token` is in bounds for this [`WhisperSegment`].
+    /// If it is not, this is immediate Undefined Behaviour.
     pub unsafe fn get_token_unchecked(&self, token: c_int) -> WhisperToken<'_, '_> {
         WhisperToken::new_unchecked(self, token)
     }
