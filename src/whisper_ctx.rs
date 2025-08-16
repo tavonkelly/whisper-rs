@@ -1,5 +1,6 @@
 use crate::error::WhisperError;
 use crate::WhisperTokenId;
+use std::borrow::Cow;
 use std::ffi::{c_int, CStr, CString};
 
 /// Safe Rust wrapper around a Whisper context.
@@ -280,54 +281,44 @@ impl WhisperInnerContext {
         unsafe { whisper_rs_sys::whisper_model_type(self.ctx) }
     }
 
-    // token functions
-    /// Convert a token ID to a string.
-    ///
-    /// # Arguments
-    /// * token_id: ID of the token.
-    ///
-    /// # Returns
-    /// Ok(&str) on success, Err(WhisperError) on failure.
-    ///
-    /// # C++ equivalent
-    /// `const char * whisper_token_to_str(struct whisper_context * ctx, whisper_token token)`
-    pub fn token_to_str(&self, token_id: WhisperTokenId) -> Result<&str, WhisperError> {
-        let c_str = self.token_to_cstr(token_id)?;
-        let r_str = c_str.to_str()?;
-        Ok(r_str)
+    // --- begin model_type_readable helpers ---
+    fn model_type_readable_cstr(&self) -> Result<&CStr, WhisperError> {
+        let ret = unsafe { whisper_rs_sys::whisper_model_type_readable(self.ctx) };
+        if ret.is_null() {
+            return Err(WhisperError::NullPointer);
+        }
+        Ok(unsafe { CStr::from_ptr(ret) })
     }
+    pub fn model_type_readable_bytes(&self) -> Result<&[u8], WhisperError> {
+        Ok(self.model_type_readable_cstr()?.to_bytes())
+    }
+    pub fn model_type_readable_str(&self) -> Result<&str, WhisperError> {
+        Ok(self.model_type_readable_cstr()?.to_str()?)
+    }
+    pub fn model_type_readable_str_lossy(&self) -> Result<Cow<'_, str>, WhisperError> {
+        Ok(self.model_type_readable_cstr()?.to_string_lossy())
+    }
+    // --- end model_type_readable helpers ---
 
-    /// Convert a token ID to a &CStr.
-    ///
-    /// # Arguments
-    /// * token_id: ID of the token.
-    ///
-    /// # Returns
-    /// Ok(String) on success, Err(WhisperError) on failure.
-    ///
-    /// # C++ equivalent
-    /// `const char * whisper_token_to_str(struct whisper_context * ctx, whisper_token token)`
-    pub fn token_to_cstr(&self, token_id: WhisperTokenId) -> Result<&CStr, WhisperError> {
+    // --- begin token functions ---
+    fn token_to_cstr(&self, token_id: WhisperTokenId) -> Result<&CStr, WhisperError> {
         let ret = unsafe { whisper_rs_sys::whisper_token_to_str(self.ctx, token_id) };
         if ret.is_null() {
             return Err(WhisperError::NullPointer);
         }
         Ok(unsafe { CStr::from_ptr(ret) })
     }
-
-    /// Undocumented but exposed function in the C++ API.
-    /// `const char * whisper_model_type_readable(struct whisper_context * ctx);`
-    ///
-    /// # Returns
-    /// Ok(String) on success, Err(WhisperError) on failure.
-    pub fn model_type_readable(&self) -> Result<String, WhisperError> {
-        let ret = unsafe { whisper_rs_sys::whisper_model_type_readable(self.ctx) };
-        if ret.is_null() {
-            return Err(WhisperError::NullPointer);
-        }
-        let c_str = unsafe { CStr::from_ptr(ret) };
-        let r_str = c_str.to_str()?;
-        Ok(r_str.to_string())
+    pub fn token_to_bytes(&self, token_id: WhisperTokenId) -> Result<&[u8], WhisperError> {
+        Ok(self.token_to_cstr(token_id)?.to_bytes())
+    }
+    pub fn token_to_str(&self, token_id: WhisperTokenId) -> Result<&str, WhisperError> {
+        Ok(self.token_to_cstr(token_id)?.to_str()?)
+    }
+    pub fn token_to_str_lossy(
+        &self,
+        token_id: WhisperTokenId,
+    ) -> Result<Cow<'_, str>, WhisperError> {
+        Ok(self.token_to_cstr(token_id)?.to_string_lossy())
     }
 
     /// Get the ID of the eot token.
@@ -396,6 +387,7 @@ impl WhisperInnerContext {
     pub fn token_lang(&self, lang_id: c_int) -> WhisperTokenId {
         unsafe { whisper_rs_sys::whisper_token_lang(self.ctx, lang_id) }
     }
+    // --- end token functions ---
 
     /// Print performance statistics to stderr.
     ///
