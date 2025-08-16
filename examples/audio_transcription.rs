@@ -110,15 +110,7 @@ fn main() -> Result<(), &'static str> {
         let start_timestamp = segment.start_timestamp();
         let end_timestamp = segment.end_timestamp();
 
-        let first_token_dtw_ts = if segment.n_tokens() > 0 {
-            if let Some(token) = segment.get_token(0) {
-                token.token_data().t_dtw
-            } else {
-                -1i64
-            }
-        } else {
-            -1i64
-        };
+        let first_token_dtw_ts = segment.get_token(0).map_or(-1, |t| t.token_data().t_dtw);
         // Print the segment to stdout.
         println!(
             "[{} - {} ({})]: {}",
