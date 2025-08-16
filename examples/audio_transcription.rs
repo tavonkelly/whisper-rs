@@ -112,7 +112,7 @@ fn main() -> Result<(), &'static str> {
 
         let first_token_dtw_ts = if segment.n_tokens() > 0 {
             if let Some(token) = segment.get_token(0) {
-                token.token_data().map_or(0, |token| token.t_dtw)
+                token.token_data().t_dtw
             } else {
                 -1i64
             }
