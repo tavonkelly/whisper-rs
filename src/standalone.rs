@@ -86,6 +86,15 @@ pub unsafe fn set_log_callback(
     }
 }
 
+/// Get the current `whisper.cpp` version.
+pub fn get_whisper_version() -> &str {
+    let ptr = unsafe { whisper_rs_sys::whisper_version() };
+    assert!(!ptr.is_null());
+    unsafe { CStr::from_ptr(ptr) }
+        .to_str()
+        .expect("Whisper version should be valid UTF-8")
+}
+
 /// Print system information.
 ///
 /// # C++ equivalent
