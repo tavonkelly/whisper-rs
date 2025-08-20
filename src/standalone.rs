@@ -87,7 +87,7 @@ pub unsafe fn set_log_callback(
 }
 
 /// Get the current `whisper.cpp` version.
-pub fn get_whisper_version() -> &str {
+pub fn get_whisper_version() -> &'static str {
     let ptr = unsafe { whisper_rs_sys::whisper_version() };
     assert!(!ptr.is_null());
     unsafe { CStr::from_ptr(ptr) }
