@@ -281,7 +281,12 @@ impl WhisperState {
     /// Ok(c_int) on success, Err(WhisperError) on failure.
     ///
     /// # C++ equivalent
-    /// `int whisper_full(struct whisper_context * ctx, struct whisper_full_params params, const float * samples, int n_samples)`
+    /// `int whisper_full_with_state(
+    ///                 struct whisper_context * ctx,
+    ///                   struct whisper_state * state,
+    ///             struct whisper_full_params   params,
+    ///                            const float * samples,
+    ///                                    int   n_samples)`
     pub fn full(&mut self, params: FullParams, data: &[f32]) -> Result<c_int, WhisperError> {
         if data.is_empty() {
             // can randomly trigger segmentation faults if we don't check this
