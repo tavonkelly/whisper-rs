@@ -251,6 +251,10 @@ fn main() {
         // so we build with optimizations even in debug mode
         config.define("CMAKE_BUILD_TYPE", "RelWithDebInfo");
         config.cxxflag("-DWHISPER_DEBUG");
+    } else {
+        // we're in release mode, explicitly set to release mode
+        // see also https://codeberg.org/tazz4843/whisper-rs/issues/226
+        config.define("CMAKE_BUILD_TYPE", "Release");
     }
 
     // Allow passing any WHISPER or CMAKE compile flags
