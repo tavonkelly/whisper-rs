@@ -251,24 +251,24 @@ impl WhisperVadSegments {
     }
 
     pub fn index_in_bounds(&self, idx: c_int) -> bool {
-        idx < 0 || idx > self.segment_count
+        idx >= 0 && idx < self.segment_count
     }
 
     /// Return the start timestamp of this segment in centiseconds (10s of milliseconds).
     pub fn get_segment_start_timestamp(&self, idx: c_int) -> Option<f32> {
         if self.index_in_bounds(idx) {
-            None
-        } else {
             Some(unsafe { whisper_vad_segments_get_segment_t0(self.ptr, idx) })
+        } else {
+            None
         }
     }
 
     /// Return the end timestamp of this segment in centiseconds (10s of milliseconds).
     pub fn get_segment_end_timestamp(&self, idx: c_int) -> Option<f32> {
         if self.index_in_bounds(idx) {
-            None
-        } else {
             Some(unsafe { whisper_vad_segments_get_segment_t1(self.ptr, idx) })
+        } else {
+            None
         }
     }
 
