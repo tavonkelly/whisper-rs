@@ -305,6 +305,7 @@ pub const GGML_EXIT_ABORTED: u32 = 1;
 pub const GGML_ROPE_TYPE_NEOX: u32 = 2;
 pub const GGML_ROPE_TYPE_MROPE: u32 = 8;
 pub const GGML_ROPE_TYPE_VISION: u32 = 24;
+pub const GGML_MROPE_SECTIONS: u32 = 4;
 pub const GGML_KQ_MASK_PAD: u32 = 64;
 pub const GGML_N_TASKS_MAX: i32 = -1;
 pub const WHISPER_SAMPLE_RATE: u32 = 16000;
@@ -1159,6 +1160,11 @@ unsafe extern "C" {
 unsafe extern "C" {
     pub fn __overflow(arg1: *mut FILE, arg2: ::std::os::raw::c_int) -> ::std::os::raw::c_int;
 }
+pub type ggml_abort_callback_t =
+    ::std::option::Option<unsafe extern "C" fn(error_message: *const ::std::os::raw::c_char)>;
+unsafe extern "C" {
+    pub fn ggml_set_abort_callback(callback: ggml_abort_callback_t) -> ggml_abort_callback_t;
+}
 unsafe extern "C" {
     pub fn ggml_abort(
         file: *const ::std::os::raw::c_char,
@@ -1260,7 +1266,8 @@ pub const ggml_type_GGML_TYPE_IQ1_M: ggml_type = 29;
 pub const ggml_type_GGML_TYPE_BF16: ggml_type = 30;
 pub const ggml_type_GGML_TYPE_TQ1_0: ggml_type = 34;
 pub const ggml_type_GGML_TYPE_TQ2_0: ggml_type = 35;
-pub const ggml_type_GGML_TYPE_COUNT: ggml_type = 39;
+pub const ggml_type_GGML_TYPE_MXFP4: ggml_type = 39;
+pub const ggml_type_GGML_TYPE_COUNT: ggml_type = 40;
 pub type ggml_type = ::std::os::raw::c_uint;
 pub const ggml_prec_GGML_PREC_DEFAULT: ggml_prec = 0;
 pub const ggml_prec_GGML_PREC_F32: ggml_prec = 10;
@@ -1289,91 +1296,97 @@ pub const ggml_ftype_GGML_FTYPE_MOSTLY_IQ2_S: ggml_ftype = 21;
 pub const ggml_ftype_GGML_FTYPE_MOSTLY_IQ4_XS: ggml_ftype = 22;
 pub const ggml_ftype_GGML_FTYPE_MOSTLY_IQ1_M: ggml_ftype = 23;
 pub const ggml_ftype_GGML_FTYPE_MOSTLY_BF16: ggml_ftype = 24;
+pub const ggml_ftype_GGML_FTYPE_MOSTLY_MXFP4: ggml_ftype = 25;
 pub type ggml_ftype = ::std::os::raw::c_int;
 pub const ggml_op_GGML_OP_NONE: ggml_op = 0;
 pub const ggml_op_GGML_OP_DUP: ggml_op = 1;
 pub const ggml_op_GGML_OP_ADD: ggml_op = 2;
-pub const ggml_op_GGML_OP_ADD1: ggml_op = 3;
-pub const ggml_op_GGML_OP_ACC: ggml_op = 4;
-pub const ggml_op_GGML_OP_SUB: ggml_op = 5;
-pub const ggml_op_GGML_OP_MUL: ggml_op = 6;
-pub const ggml_op_GGML_OP_DIV: ggml_op = 7;
-pub const ggml_op_GGML_OP_SQR: ggml_op = 8;
-pub const ggml_op_GGML_OP_SQRT: ggml_op = 9;
-pub const ggml_op_GGML_OP_LOG: ggml_op = 10;
-pub const ggml_op_GGML_OP_SIN: ggml_op = 11;
-pub const ggml_op_GGML_OP_COS: ggml_op = 12;
-pub const ggml_op_GGML_OP_SUM: ggml_op = 13;
-pub const ggml_op_GGML_OP_SUM_ROWS: ggml_op = 14;
-pub const ggml_op_GGML_OP_MEAN: ggml_op = 15;
-pub const ggml_op_GGML_OP_ARGMAX: ggml_op = 16;
-pub const ggml_op_GGML_OP_COUNT_EQUAL: ggml_op = 17;
-pub const ggml_op_GGML_OP_REPEAT: ggml_op = 18;
-pub const ggml_op_GGML_OP_REPEAT_BACK: ggml_op = 19;
-pub const ggml_op_GGML_OP_CONCAT: ggml_op = 20;
-pub const ggml_op_GGML_OP_SILU_BACK: ggml_op = 21;
-pub const ggml_op_GGML_OP_NORM: ggml_op = 22;
-pub const ggml_op_GGML_OP_RMS_NORM: ggml_op = 23;
-pub const ggml_op_GGML_OP_RMS_NORM_BACK: ggml_op = 24;
-pub const ggml_op_GGML_OP_GROUP_NORM: ggml_op = 25;
-pub const ggml_op_GGML_OP_L2_NORM: ggml_op = 26;
-pub const ggml_op_GGML_OP_MUL_MAT: ggml_op = 27;
-pub const ggml_op_GGML_OP_MUL_MAT_ID: ggml_op = 28;
-pub const ggml_op_GGML_OP_OUT_PROD: ggml_op = 29;
-pub const ggml_op_GGML_OP_SCALE: ggml_op = 30;
-pub const ggml_op_GGML_OP_SET: ggml_op = 31;
-pub const ggml_op_GGML_OP_CPY: ggml_op = 32;
-pub const ggml_op_GGML_OP_CONT: ggml_op = 33;
-pub const ggml_op_GGML_OP_RESHAPE: ggml_op = 34;
-pub const ggml_op_GGML_OP_VIEW: ggml_op = 35;
-pub const ggml_op_GGML_OP_PERMUTE: ggml_op = 36;
-pub const ggml_op_GGML_OP_TRANSPOSE: ggml_op = 37;
-pub const ggml_op_GGML_OP_GET_ROWS: ggml_op = 38;
-pub const ggml_op_GGML_OP_GET_ROWS_BACK: ggml_op = 39;
-pub const ggml_op_GGML_OP_DIAG: ggml_op = 40;
-pub const ggml_op_GGML_OP_DIAG_MASK_INF: ggml_op = 41;
-pub const ggml_op_GGML_OP_DIAG_MASK_ZERO: ggml_op = 42;
-pub const ggml_op_GGML_OP_SOFT_MAX: ggml_op = 43;
-pub const ggml_op_GGML_OP_SOFT_MAX_BACK: ggml_op = 44;
-pub const ggml_op_GGML_OP_ROPE: ggml_op = 45;
-pub const ggml_op_GGML_OP_ROPE_BACK: ggml_op = 46;
-pub const ggml_op_GGML_OP_CLAMP: ggml_op = 47;
-pub const ggml_op_GGML_OP_CONV_TRANSPOSE_1D: ggml_op = 48;
-pub const ggml_op_GGML_OP_IM2COL: ggml_op = 49;
-pub const ggml_op_GGML_OP_IM2COL_BACK: ggml_op = 50;
-pub const ggml_op_GGML_OP_CONV_2D_DW: ggml_op = 51;
-pub const ggml_op_GGML_OP_CONV_TRANSPOSE_2D: ggml_op = 52;
-pub const ggml_op_GGML_OP_POOL_1D: ggml_op = 53;
-pub const ggml_op_GGML_OP_POOL_2D: ggml_op = 54;
-pub const ggml_op_GGML_OP_POOL_2D_BACK: ggml_op = 55;
-pub const ggml_op_GGML_OP_UPSCALE: ggml_op = 56;
-pub const ggml_op_GGML_OP_PAD: ggml_op = 57;
-pub const ggml_op_GGML_OP_PAD_REFLECT_1D: ggml_op = 58;
-pub const ggml_op_GGML_OP_ROLL: ggml_op = 59;
-pub const ggml_op_GGML_OP_ARANGE: ggml_op = 60;
-pub const ggml_op_GGML_OP_TIMESTEP_EMBEDDING: ggml_op = 61;
-pub const ggml_op_GGML_OP_ARGSORT: ggml_op = 62;
-pub const ggml_op_GGML_OP_LEAKY_RELU: ggml_op = 63;
-pub const ggml_op_GGML_OP_FLASH_ATTN_EXT: ggml_op = 64;
-pub const ggml_op_GGML_OP_FLASH_ATTN_BACK: ggml_op = 65;
-pub const ggml_op_GGML_OP_SSM_CONV: ggml_op = 66;
-pub const ggml_op_GGML_OP_SSM_SCAN: ggml_op = 67;
-pub const ggml_op_GGML_OP_WIN_PART: ggml_op = 68;
-pub const ggml_op_GGML_OP_WIN_UNPART: ggml_op = 69;
-pub const ggml_op_GGML_OP_GET_REL_POS: ggml_op = 70;
-pub const ggml_op_GGML_OP_ADD_REL_POS: ggml_op = 71;
-pub const ggml_op_GGML_OP_RWKV_WKV6: ggml_op = 72;
-pub const ggml_op_GGML_OP_GATED_LINEAR_ATTN: ggml_op = 73;
-pub const ggml_op_GGML_OP_RWKV_WKV7: ggml_op = 74;
-pub const ggml_op_GGML_OP_UNARY: ggml_op = 75;
-pub const ggml_op_GGML_OP_MAP_CUSTOM1: ggml_op = 76;
-pub const ggml_op_GGML_OP_MAP_CUSTOM2: ggml_op = 77;
-pub const ggml_op_GGML_OP_MAP_CUSTOM3: ggml_op = 78;
-pub const ggml_op_GGML_OP_CUSTOM: ggml_op = 79;
-pub const ggml_op_GGML_OP_CROSS_ENTROPY_LOSS: ggml_op = 80;
-pub const ggml_op_GGML_OP_CROSS_ENTROPY_LOSS_BACK: ggml_op = 81;
-pub const ggml_op_GGML_OP_OPT_STEP_ADAMW: ggml_op = 82;
-pub const ggml_op_GGML_OP_COUNT: ggml_op = 83;
+pub const ggml_op_GGML_OP_ADD_ID: ggml_op = 3;
+pub const ggml_op_GGML_OP_ADD1: ggml_op = 4;
+pub const ggml_op_GGML_OP_ACC: ggml_op = 5;
+pub const ggml_op_GGML_OP_SUB: ggml_op = 6;
+pub const ggml_op_GGML_OP_MUL: ggml_op = 7;
+pub const ggml_op_GGML_OP_DIV: ggml_op = 8;
+pub const ggml_op_GGML_OP_SQR: ggml_op = 9;
+pub const ggml_op_GGML_OP_SQRT: ggml_op = 10;
+pub const ggml_op_GGML_OP_LOG: ggml_op = 11;
+pub const ggml_op_GGML_OP_SIN: ggml_op = 12;
+pub const ggml_op_GGML_OP_COS: ggml_op = 13;
+pub const ggml_op_GGML_OP_SUM: ggml_op = 14;
+pub const ggml_op_GGML_OP_SUM_ROWS: ggml_op = 15;
+pub const ggml_op_GGML_OP_MEAN: ggml_op = 16;
+pub const ggml_op_GGML_OP_ARGMAX: ggml_op = 17;
+pub const ggml_op_GGML_OP_COUNT_EQUAL: ggml_op = 18;
+pub const ggml_op_GGML_OP_REPEAT: ggml_op = 19;
+pub const ggml_op_GGML_OP_REPEAT_BACK: ggml_op = 20;
+pub const ggml_op_GGML_OP_CONCAT: ggml_op = 21;
+pub const ggml_op_GGML_OP_SILU_BACK: ggml_op = 22;
+pub const ggml_op_GGML_OP_NORM: ggml_op = 23;
+pub const ggml_op_GGML_OP_RMS_NORM: ggml_op = 24;
+pub const ggml_op_GGML_OP_RMS_NORM_BACK: ggml_op = 25;
+pub const ggml_op_GGML_OP_GROUP_NORM: ggml_op = 26;
+pub const ggml_op_GGML_OP_L2_NORM: ggml_op = 27;
+pub const ggml_op_GGML_OP_MUL_MAT: ggml_op = 28;
+pub const ggml_op_GGML_OP_MUL_MAT_ID: ggml_op = 29;
+pub const ggml_op_GGML_OP_OUT_PROD: ggml_op = 30;
+pub const ggml_op_GGML_OP_SCALE: ggml_op = 31;
+pub const ggml_op_GGML_OP_SET: ggml_op = 32;
+pub const ggml_op_GGML_OP_CPY: ggml_op = 33;
+pub const ggml_op_GGML_OP_CONT: ggml_op = 34;
+pub const ggml_op_GGML_OP_RESHAPE: ggml_op = 35;
+pub const ggml_op_GGML_OP_VIEW: ggml_op = 36;
+pub const ggml_op_GGML_OP_PERMUTE: ggml_op = 37;
+pub const ggml_op_GGML_OP_TRANSPOSE: ggml_op = 38;
+pub const ggml_op_GGML_OP_GET_ROWS: ggml_op = 39;
+pub const ggml_op_GGML_OP_GET_ROWS_BACK: ggml_op = 40;
+pub const ggml_op_GGML_OP_SET_ROWS: ggml_op = 41;
+pub const ggml_op_GGML_OP_DIAG: ggml_op = 42;
+pub const ggml_op_GGML_OP_DIAG_MASK_INF: ggml_op = 43;
+pub const ggml_op_GGML_OP_DIAG_MASK_ZERO: ggml_op = 44;
+pub const ggml_op_GGML_OP_SOFT_MAX: ggml_op = 45;
+pub const ggml_op_GGML_OP_SOFT_MAX_BACK: ggml_op = 46;
+pub const ggml_op_GGML_OP_ROPE: ggml_op = 47;
+pub const ggml_op_GGML_OP_ROPE_BACK: ggml_op = 48;
+pub const ggml_op_GGML_OP_CLAMP: ggml_op = 49;
+pub const ggml_op_GGML_OP_CONV_TRANSPOSE_1D: ggml_op = 50;
+pub const ggml_op_GGML_OP_IM2COL: ggml_op = 51;
+pub const ggml_op_GGML_OP_IM2COL_BACK: ggml_op = 52;
+pub const ggml_op_GGML_OP_CONV_2D: ggml_op = 53;
+pub const ggml_op_GGML_OP_CONV_2D_DW: ggml_op = 54;
+pub const ggml_op_GGML_OP_CONV_TRANSPOSE_2D: ggml_op = 55;
+pub const ggml_op_GGML_OP_POOL_1D: ggml_op = 56;
+pub const ggml_op_GGML_OP_POOL_2D: ggml_op = 57;
+pub const ggml_op_GGML_OP_POOL_2D_BACK: ggml_op = 58;
+pub const ggml_op_GGML_OP_UPSCALE: ggml_op = 59;
+pub const ggml_op_GGML_OP_PAD: ggml_op = 60;
+pub const ggml_op_GGML_OP_PAD_REFLECT_1D: ggml_op = 61;
+pub const ggml_op_GGML_OP_ROLL: ggml_op = 62;
+pub const ggml_op_GGML_OP_ARANGE: ggml_op = 63;
+pub const ggml_op_GGML_OP_TIMESTEP_EMBEDDING: ggml_op = 64;
+pub const ggml_op_GGML_OP_ARGSORT: ggml_op = 65;
+pub const ggml_op_GGML_OP_LEAKY_RELU: ggml_op = 66;
+pub const ggml_op_GGML_OP_FLASH_ATTN_EXT: ggml_op = 67;
+pub const ggml_op_GGML_OP_FLASH_ATTN_BACK: ggml_op = 68;
+pub const ggml_op_GGML_OP_SSM_CONV: ggml_op = 69;
+pub const ggml_op_GGML_OP_SSM_SCAN: ggml_op = 70;
+pub const ggml_op_GGML_OP_WIN_PART: ggml_op = 71;
+pub const ggml_op_GGML_OP_WIN_UNPART: ggml_op = 72;
+pub const ggml_op_GGML_OP_GET_REL_POS: ggml_op = 73;
+pub const ggml_op_GGML_OP_ADD_REL_POS: ggml_op = 74;
+pub const ggml_op_GGML_OP_RWKV_WKV6: ggml_op = 75;
+pub const ggml_op_GGML_OP_GATED_LINEAR_ATTN: ggml_op = 76;
+pub const ggml_op_GGML_OP_RWKV_WKV7: ggml_op = 77;
+pub const ggml_op_GGML_OP_UNARY: ggml_op = 78;
+pub const ggml_op_GGML_OP_MAP_CUSTOM1: ggml_op = 79;
+pub const ggml_op_GGML_OP_MAP_CUSTOM2: ggml_op = 80;
+pub const ggml_op_GGML_OP_MAP_CUSTOM3: ggml_op = 81;
+pub const ggml_op_GGML_OP_CUSTOM: ggml_op = 82;
+pub const ggml_op_GGML_OP_CROSS_ENTROPY_LOSS: ggml_op = 83;
+pub const ggml_op_GGML_OP_CROSS_ENTROPY_LOSS_BACK: ggml_op = 84;
+pub const ggml_op_GGML_OP_OPT_STEP_ADAMW: ggml_op = 85;
+pub const ggml_op_GGML_OP_OPT_STEP_SGD: ggml_op = 86;
+pub const ggml_op_GGML_OP_GLU: ggml_op = 87;
+pub const ggml_op_GGML_OP_COUNT: ggml_op = 88;
 pub type ggml_op = ::std::os::raw::c_uint;
 pub const ggml_unary_op_GGML_UNARY_OP_ABS: ggml_unary_op = 0;
 pub const ggml_unary_op_GGML_UNARY_OP_SGN: ggml_unary_op = 1;
@@ -1392,6 +1405,14 @@ pub const ggml_unary_op_GGML_UNARY_OP_EXP: ggml_unary_op = 13;
 pub const ggml_unary_op_GGML_UNARY_OP_GELU_ERF: ggml_unary_op = 14;
 pub const ggml_unary_op_GGML_UNARY_OP_COUNT: ggml_unary_op = 15;
 pub type ggml_unary_op = ::std::os::raw::c_uint;
+pub const ggml_glu_op_GGML_GLU_OP_REGLU: ggml_glu_op = 0;
+pub const ggml_glu_op_GGML_GLU_OP_GEGLU: ggml_glu_op = 1;
+pub const ggml_glu_op_GGML_GLU_OP_SWIGLU: ggml_glu_op = 2;
+pub const ggml_glu_op_GGML_GLU_OP_SWIGLU_OAI: ggml_glu_op = 3;
+pub const ggml_glu_op_GGML_GLU_OP_GEGLU_ERF: ggml_glu_op = 4;
+pub const ggml_glu_op_GGML_GLU_OP_GEGLU_QUICK: ggml_glu_op = 5;
+pub const ggml_glu_op_GGML_GLU_OP_COUNT: ggml_glu_op = 6;
+pub type ggml_glu_op = ::std::os::raw::c_uint;
 pub const ggml_object_type_GGML_OBJECT_TYPE_TENSOR: ggml_object_type = 0;
 pub const ggml_object_type_GGML_OBJECT_TYPE_GRAPH: ggml_object_type = 1;
 pub const ggml_object_type_GGML_OBJECT_TYPE_WORK_BUFFER: ggml_object_type = 2;
@@ -1476,6 +1497,12 @@ unsafe extern "C" {
     pub fn ggml_guid_matches(guid_a: ggml_guid_t, guid_b: ggml_guid_t) -> bool;
 }
 unsafe extern "C" {
+    pub fn ggml_version() -> *const ::std::os::raw::c_char;
+}
+unsafe extern "C" {
+    pub fn ggml_commit() -> *const ::std::os::raw::c_char;
+}
+unsafe extern "C" {
     pub fn ggml_time_init();
 }
 unsafe extern "C" {
@@ -1539,6 +1566,9 @@ unsafe extern "C" {
     pub fn ggml_unary_op_name(op: ggml_unary_op) -> *const ::std::os::raw::c_char;
 }
 unsafe extern "C" {
+    pub fn ggml_glu_op_name(op: ggml_glu_op) -> *const ::std::os::raw::c_char;
+}
+unsafe extern "C" {
     pub fn ggml_op_desc(t: *const ggml_tensor) -> *const ::std::os::raw::c_char;
 }
 unsafe extern "C" {
@@ -1591,6 +1621,9 @@ unsafe extern "C" {
 }
 unsafe extern "C" {
     pub fn ggml_is_contiguous_channels(tensor: *const ggml_tensor) -> bool;
+}
+unsafe extern "C" {
+    pub fn ggml_is_contiguous_rows(tensor: *const ggml_tensor) -> bool;
 }
 unsafe extern "C" {
     pub fn ggml_are_same_shape(t0: *const ggml_tensor, t1: *const ggml_tensor) -> bool;
@@ -1718,6 +1751,9 @@ unsafe extern "C" {
     pub fn ggml_get_unary_op(tensor: *const ggml_tensor) -> ggml_unary_op;
 }
 unsafe extern "C" {
+    pub fn ggml_get_glu_op(tensor: *const ggml_tensor) -> ggml_glu_op;
+}
+unsafe extern "C" {
     pub fn ggml_get_data(tensor: *const ggml_tensor) -> *mut ::std::os::raw::c_void;
 }
 unsafe extern "C" {
@@ -1777,6 +1813,14 @@ unsafe extern "C" {
         a: *mut ggml_tensor,
         b: *mut ggml_tensor,
         type_: ggml_type,
+    ) -> *mut ggml_tensor;
+}
+unsafe extern "C" {
+    pub fn ggml_add_id(
+        ctx: *mut ggml_context,
+        a: *mut ggml_tensor,
+        b: *mut ggml_tensor,
+        ids: *mut ggml_tensor,
     ) -> *mut ggml_tensor;
 }
 unsafe extern "C" {
@@ -2039,6 +2083,99 @@ unsafe extern "C" {
     pub fn ggml_exp_inplace(ctx: *mut ggml_context, a: *mut ggml_tensor) -> *mut ggml_tensor;
 }
 unsafe extern "C" {
+    pub fn ggml_glu(
+        ctx: *mut ggml_context,
+        a: *mut ggml_tensor,
+        op: ggml_glu_op,
+        swapped: bool,
+    ) -> *mut ggml_tensor;
+}
+unsafe extern "C" {
+    pub fn ggml_reglu(ctx: *mut ggml_context, a: *mut ggml_tensor) -> *mut ggml_tensor;
+}
+unsafe extern "C" {
+    pub fn ggml_reglu_swapped(ctx: *mut ggml_context, a: *mut ggml_tensor) -> *mut ggml_tensor;
+}
+unsafe extern "C" {
+    pub fn ggml_geglu(ctx: *mut ggml_context, a: *mut ggml_tensor) -> *mut ggml_tensor;
+}
+unsafe extern "C" {
+    pub fn ggml_geglu_swapped(ctx: *mut ggml_context, a: *mut ggml_tensor) -> *mut ggml_tensor;
+}
+unsafe extern "C" {
+    pub fn ggml_swiglu(ctx: *mut ggml_context, a: *mut ggml_tensor) -> *mut ggml_tensor;
+}
+unsafe extern "C" {
+    pub fn ggml_swiglu_swapped(ctx: *mut ggml_context, a: *mut ggml_tensor) -> *mut ggml_tensor;
+}
+unsafe extern "C" {
+    pub fn ggml_geglu_erf(ctx: *mut ggml_context, a: *mut ggml_tensor) -> *mut ggml_tensor;
+}
+unsafe extern "C" {
+    pub fn ggml_geglu_erf_swapped(ctx: *mut ggml_context, a: *mut ggml_tensor) -> *mut ggml_tensor;
+}
+unsafe extern "C" {
+    pub fn ggml_geglu_quick(ctx: *mut ggml_context, a: *mut ggml_tensor) -> *mut ggml_tensor;
+}
+unsafe extern "C" {
+    pub fn ggml_geglu_quick_swapped(
+        ctx: *mut ggml_context,
+        a: *mut ggml_tensor,
+    ) -> *mut ggml_tensor;
+}
+unsafe extern "C" {
+    pub fn ggml_glu_split(
+        ctx: *mut ggml_context,
+        a: *mut ggml_tensor,
+        b: *mut ggml_tensor,
+        op: ggml_glu_op,
+    ) -> *mut ggml_tensor;
+}
+unsafe extern "C" {
+    pub fn ggml_reglu_split(
+        ctx: *mut ggml_context,
+        a: *mut ggml_tensor,
+        b: *mut ggml_tensor,
+    ) -> *mut ggml_tensor;
+}
+unsafe extern "C" {
+    pub fn ggml_geglu_split(
+        ctx: *mut ggml_context,
+        a: *mut ggml_tensor,
+        b: *mut ggml_tensor,
+    ) -> *mut ggml_tensor;
+}
+unsafe extern "C" {
+    pub fn ggml_swiglu_split(
+        ctx: *mut ggml_context,
+        a: *mut ggml_tensor,
+        b: *mut ggml_tensor,
+    ) -> *mut ggml_tensor;
+}
+unsafe extern "C" {
+    pub fn ggml_geglu_erf_split(
+        ctx: *mut ggml_context,
+        a: *mut ggml_tensor,
+        b: *mut ggml_tensor,
+    ) -> *mut ggml_tensor;
+}
+unsafe extern "C" {
+    pub fn ggml_geglu_quick_split(
+        ctx: *mut ggml_context,
+        a: *mut ggml_tensor,
+        b: *mut ggml_tensor,
+    ) -> *mut ggml_tensor;
+}
+unsafe extern "C" {
+    pub fn ggml_swiglu_oai(
+        ctx: *mut ggml_context,
+        a: *mut ggml_tensor,
+        b: *mut ggml_tensor,
+        alpha: f32,
+        limit: f32,
+    ) -> *mut ggml_tensor;
+}
+unsafe extern "C" {
     pub fn ggml_norm(ctx: *mut ggml_context, a: *mut ggml_tensor, eps: f32) -> *mut ggml_tensor;
 }
 unsafe extern "C" {
@@ -2126,6 +2263,22 @@ unsafe extern "C" {
         ctx: *mut ggml_context,
         a: *mut ggml_tensor,
         s: f32,
+    ) -> *mut ggml_tensor;
+}
+unsafe extern "C" {
+    pub fn ggml_scale_bias(
+        ctx: *mut ggml_context,
+        a: *mut ggml_tensor,
+        s: f32,
+        b: f32,
+    ) -> *mut ggml_tensor;
+}
+unsafe extern "C" {
+    pub fn ggml_scale_bias_inplace(
+        ctx: *mut ggml_context,
+        a: *mut ggml_tensor,
+        s: f32,
+        b: f32,
     ) -> *mut ggml_tensor;
 }
 unsafe extern "C" {
@@ -2345,6 +2498,14 @@ unsafe extern "C" {
     ) -> *mut ggml_tensor;
 }
 unsafe extern "C" {
+    pub fn ggml_set_rows(
+        ctx: *mut ggml_context,
+        a: *mut ggml_tensor,
+        b: *mut ggml_tensor,
+        c: *mut ggml_tensor,
+    ) -> *mut ggml_tensor;
+}
+unsafe extern "C" {
     pub fn ggml_diag(ctx: *mut ggml_context, a: *mut ggml_tensor) -> *mut ggml_tensor;
 }
 unsafe extern "C" {
@@ -2389,6 +2550,9 @@ unsafe extern "C" {
         scale: f32,
         max_bias: f32,
     ) -> *mut ggml_tensor;
+}
+unsafe extern "C" {
+    pub fn ggml_soft_max_add_sinks(a: *mut ggml_tensor, sinks: *mut ggml_tensor);
 }
 unsafe extern "C" {
     pub fn ggml_soft_max_ext_back(
@@ -2468,6 +2632,24 @@ unsafe extern "C" {
         b: *mut ggml_tensor,
         c: *mut ggml_tensor,
         n_dims: ::std::os::raw::c_int,
+        mode: ::std::os::raw::c_int,
+        n_ctx_orig: ::std::os::raw::c_int,
+        freq_base: f32,
+        freq_scale: f32,
+        ext_factor: f32,
+        attn_factor: f32,
+        beta_fast: f32,
+        beta_slow: f32,
+    ) -> *mut ggml_tensor;
+}
+unsafe extern "C" {
+    pub fn ggml_rope_multi_inplace(
+        ctx: *mut ggml_context,
+        a: *mut ggml_tensor,
+        b: *mut ggml_tensor,
+        c: *mut ggml_tensor,
+        n_dims: ::std::os::raw::c_int,
+        sections: *mut ::std::os::raw::c_int,
         mode: ::std::os::raw::c_int,
         n_ctx_orig: ::std::os::raw::c_int,
         freq_base: f32,
@@ -2702,6 +2884,19 @@ unsafe extern "C" {
         stride: ::std::os::raw::c_int,
     ) -> *mut ggml_tensor;
 }
+unsafe extern "C" {
+    pub fn ggml_conv_2d_direct(
+        ctx: *mut ggml_context,
+        a: *mut ggml_tensor,
+        b: *mut ggml_tensor,
+        s0: ::std::os::raw::c_int,
+        s1: ::std::os::raw::c_int,
+        p0: ::std::os::raw::c_int,
+        p1: ::std::os::raw::c_int,
+        d0: ::std::os::raw::c_int,
+        d1: ::std::os::raw::c_int,
+    ) -> *mut ggml_tensor;
+}
 pub const ggml_op_pool_GGML_OP_POOL_MAX: ggml_op_pool = 0;
 pub const ggml_op_pool_GGML_OP_POOL_AVG: ggml_op_pool = 1;
 pub const ggml_op_pool_GGML_OP_POOL_COUNT: ggml_op_pool = 2;
@@ -2745,7 +2940,10 @@ unsafe extern "C" {
 }
 pub const ggml_scale_mode_GGML_SCALE_MODE_NEAREST: ggml_scale_mode = 0;
 pub const ggml_scale_mode_GGML_SCALE_MODE_BILINEAR: ggml_scale_mode = 1;
+pub const ggml_scale_mode_GGML_SCALE_MODE_COUNT: ggml_scale_mode = 2;
 pub type ggml_scale_mode = ::std::os::raw::c_uint;
+pub const ggml_scale_flag_GGML_SCALE_FLAG_ALIGN_CORNERS: ggml_scale_flag = 256;
+pub type ggml_scale_flag = ::std::os::raw::c_uint;
 unsafe extern "C" {
     pub fn ggml_upscale(
         ctx: *mut ggml_context,
@@ -2763,6 +2961,17 @@ unsafe extern "C" {
         ne2: ::std::os::raw::c_int,
         ne3: ::std::os::raw::c_int,
         mode: ggml_scale_mode,
+    ) -> *mut ggml_tensor;
+}
+unsafe extern "C" {
+    pub fn ggml_interpolate(
+        ctx: *mut ggml_context,
+        a: *mut ggml_tensor,
+        ne0: i64,
+        ne1: i64,
+        ne2: i64,
+        ne3: i64,
+        mode: u32,
     ) -> *mut ggml_tensor;
 }
 unsafe extern "C" {
@@ -2845,6 +3054,9 @@ unsafe extern "C" {
     pub fn ggml_flash_attn_ext_get_prec(a: *const ggml_tensor) -> ggml_prec;
 }
 unsafe extern "C" {
+    pub fn ggml_flash_attn_ext_add_sinks(a: *mut ggml_tensor, sinks: *mut ggml_tensor);
+}
+unsafe extern "C" {
     pub fn ggml_flash_attn_back(
         ctx: *mut ggml_context,
         q: *mut ggml_tensor,
@@ -2870,6 +3082,7 @@ unsafe extern "C" {
         A: *mut ggml_tensor,
         B: *mut ggml_tensor,
         C: *mut ggml_tensor,
+        ids: *mut ggml_tensor,
     ) -> *mut ggml_tensor;
 }
 unsafe extern "C" {
@@ -3107,6 +3320,14 @@ unsafe extern "C" {
         m: *mut ggml_tensor,
         v: *mut ggml_tensor,
         adamw_params: *mut ggml_tensor,
+    ) -> *mut ggml_tensor;
+}
+unsafe extern "C" {
+    pub fn ggml_opt_step_sgd(
+        ctx: *mut ggml_context,
+        a: *mut ggml_tensor,
+        grad: *mut ggml_tensor,
+        sgd_params: *mut ggml_tensor,
     ) -> *mut ggml_tensor;
 }
 unsafe extern "C" {
@@ -4019,6 +4240,7 @@ unsafe extern "C" {
         graph: *mut ggml_cgraph,
         callback: ggml_backend_eval_callback,
         user_data: *mut ::std::os::raw::c_void,
+        test_node: *mut ggml_tensor,
     ) -> bool;
 }
 unsafe extern "C" {
@@ -4248,6 +4470,9 @@ unsafe extern "C" {
     pub fn ggml_cpu_has_vxe() -> ::std::os::raw::c_int;
 }
 unsafe extern "C" {
+    pub fn ggml_cpu_has_nnpa() -> ::std::os::raw::c_int;
+}
+unsafe extern "C" {
     pub fn ggml_cpu_has_wasm_simd() -> ::std::os::raw::c_int;
 }
 unsafe extern "C" {
@@ -4319,6 +4544,9 @@ unsafe extern "C" {
 }
 unsafe extern "C" {
     pub fn ggml_backend_cpu_reg() -> ggml_backend_reg_t;
+}
+unsafe extern "C" {
+    pub fn ggml_cpu_fp32_to_fp32(arg1: *const f32, arg2: *mut f32, arg3: i64);
 }
 unsafe extern "C" {
     pub fn ggml_cpu_fp32_to_fp16(arg1: *const f32, arg2: *mut ggml_fp16_t, arg3: i64);
@@ -4549,6 +4777,9 @@ const _: () = {
     ["Offset of field: whisper_vad_params::samples_overlap"]
         [::std::mem::offset_of!(whisper_vad_params, samples_overlap) - 20usize];
 };
+unsafe extern "C" {
+    pub fn whisper_version() -> *const ::std::os::raw::c_char;
+}
 unsafe extern "C" {
     pub fn whisper_init_from_file_with_params(
         path_model: *const ::std::os::raw::c_char,
