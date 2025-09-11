@@ -141,6 +141,8 @@ impl WhisperVadContextParams {
 pub struct WhisperVadContext {
     ptr: *mut whisper_vad_context,
 }
+unsafe impl Send for WhisperVadContext {}
+unsafe impl Sync for WhisperVadContext {}
 
 impl WhisperVadContext {
     pub fn new(model_path: &str, params: WhisperVadContextParams) -> Result<Self, WhisperError> {
