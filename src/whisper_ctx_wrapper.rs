@@ -1,5 +1,5 @@
 use std::borrow::Cow;
-use std::ffi::{c_int, CStr};
+use std::ffi::c_int;
 use std::sync::Arc;
 
 use crate::{
