@@ -5,9 +5,11 @@ use crate::{FullParams, WhisperError, WhisperInnerContext, WhisperTokenId};
 
 mod iterator;
 mod segment;
+mod token;
 
 pub use iterator::WhisperStateSegmentIterator;
-pub use segment::{WhisperSegment, WhisperToken};
+pub use segment::WhisperSegment;
+pub use token::WhisperToken;
 
 /// Rustified pointer to a Whisper state.
 #[derive(Debug)]
