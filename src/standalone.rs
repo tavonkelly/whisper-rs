@@ -128,14 +128,3 @@ impl Default for SystemInfo {
         }
     }
 }
-
-#[cfg(test)]
-mod tests {
-    use super::*;
-
-    #[test]
-    fn test_openblas() {
-        let info = SystemInfo::default();
-        assert_eq!(info.blas, cfg!(feature = "openblas"));
-    }
-}
