@@ -868,7 +868,7 @@ mod test_whisper_params_initial_prompt {
 
     #[test]
     fn test_initial_prompt_normal_usage() {
-        let mut params = FullParams::new(SamplingStrategy::default());
+        let mut params = FullParams::new(SamplingStrategy::Greedy { best_of: 5 });
         let prompt = "Hello, world!";
         params.set_initial_prompt(prompt);
         assert_eq!(params.get_initial_prompt(), prompt);
@@ -877,7 +877,7 @@ mod test_whisper_params_initial_prompt {
     #[test]
     #[should_panic(expected = "Initial prompt contains null byte")]
     fn test_initial_prompt_null_byte() {
-        let mut params = FullParams::new(SamplingStrategy::default());
+        let mut params = FullParams::new(SamplingStrategy::Greedy { best_of: 5 });
         let prompt = "Hello\0, world!";
         params.set_initial_prompt(prompt);
         // Should panic
@@ -885,7 +885,7 @@ mod test_whisper_params_initial_prompt {
 
     #[test]
     fn test_initial_prompt_empty_string() {
-        let mut params = FullParams::new(SamplingStrategy::default());
+        let mut params = FullParams::new(SamplingStrategy::Greedy { best_of: 5 });
         let prompt = "";
         params.set_initial_prompt(prompt);
 
@@ -898,7 +898,7 @@ mod test_whisper_params_initial_prompt {
 
     #[test]
     fn test_initial_prompt_repeated_calls() {
-        let mut params = FullParams::new(SamplingStrategy::default());
+        let mut params = FullParams::new(SamplingStrategy::Greedy { best_of: 5 });
         params.set_initial_prompt("First prompt");
         assert_eq!(
             params.get_initial_prompt(),
@@ -916,7 +916,7 @@ mod test_whisper_params_initial_prompt {
 
     #[test]
     fn test_initial_prompt_long_string() {
-        let mut params = FullParams::new(SamplingStrategy::default());
+        let mut params = FullParams::new(SamplingStrategy::Greedy { best_of: 5 });
         let long_prompt = "a".repeat(10000); // a long string of 10,000 'a' characters
         params.set_initial_prompt(&long_prompt);
 
