@@ -78,6 +78,10 @@ fn main() -> Result<(), &'static str> {
         ..
     } = reader.spec();
 
+    if sample_rate != 16000 {
+        panic!("sample rate must be 16KHz");
+    }
+
     // Convert the audio to floating point samples.
     let samples: Vec<i16> = reader
         .into_samples::<i16>()
@@ -88,15 +92,17 @@ fn main() -> Result<(), &'static str> {
 
     // Convert audio to 16KHz mono f32 samples, as required by the model.
     // These utilities are provided for convenience, but can be replaced with custom conversion logic.
-    if channels == 2 {
-        audio = whisper_rs::convert_stereo_to_mono_audio(&audio).expect("Conversion error");
-    } else if channels != 1 {
+    let audio = if channels == 1 {
+        audio
+    } else if channels == 2 {
+        // be sure to initialize the output array to exactly half
+        // the length of the input array
+        let mut output = vec![0.0; audio.len() / 2];
+        whisper_rs::convert_stereo_to_mono_audio(&audio, &mut output).expect("Conversion error");
+        output
+    } else {
         panic!(">2 channels unsupported");
-    }
-
-    if sample_rate != 16000 {
-        panic!("sample rate must be 16KHz");
-    }
+    };
 
     // Run the model.
     state.full(params, &audio[..]).expect("failed to run model");
