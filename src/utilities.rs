@@ -37,10 +37,12 @@ pub fn convert_integer_to_float_audio(
 /// Convert 32-bit floating point stereo PCM audio to 32-bit floating point mono PCM audio.
 ///
 /// # Arguments
-/// * `samples` - The array of 32-bit floating point stereo PCM audio samples.
+/// * `input` - The array of 32-bit floating point stereo PCM audio samples.
+/// * `output` - An output place to write all the mono samples.
 ///
 /// # Errors
-/// * if `samples.len()` is odd
+/// * if `samples.len()` is odd ([`WhisperError::HalfSampleMissing`])
+/// * if `input.len() / 2 < samples.len()` ([`WhisperError::InputOutputLengthMismatch`])
 ///
 /// # Returns
 /// A vector of 32-bit floating point mono PCM audio samples.
@@ -51,15 +53,24 @@ pub fn convert_integer_to_float_audio(
 /// let samples = [0.0f32; 1024];
 /// let mono = convert_stereo_to_mono_audio(&samples).expect("should be no half samples missing");
 /// ```
-pub fn convert_stereo_to_mono_audio(samples: &[f32]) -> Result<Vec<f32>, WhisperError> {
-    if samples.len() & 1 != 0 {
-        return Err(WhisperError::HalfSampleMissing(samples.len()));
+pub fn convert_stereo_to_mono_audio(input: &[f32], output: &mut [f32]) -> Result<(), WhisperError> {
+    let (input, []) = input.as_chunks::<2>() else {
+        // we only hit this branch if the second binding was not empty
+        // or in other words, if input.len() % 2 != 0
+        return Err(WhisperError::HalfSampleMissing(input.len()));
+    };
+    if output.len() != input.len() {
+        return Err(WhisperError::InputOutputLengthMismatch {
+            input_len: input.len(),
+            output_len: output.len(),
+        });
     }
 
-    Ok(samples
-        .chunks_exact(2)
-        .map(|x| (x[0] + x[1]) / 2.0)
-        .collect())
+    for ([left, right], output) in input.iter().zip(output) {
+        *output = (left + right) / 2.0;
+    }
+
+    Ok(())
 }
 
 #[cfg(test)]
@@ -86,16 +97,53 @@ mod test {
     }
 
     #[test]
+    pub fn assert_stereo_to_mono_success() {
+        let samples = random_sample_data::<f32>();
+        let mut output = vec![0.0; samples.len() / 2];
+        let result = convert_stereo_to_mono_audio(&samples, &mut output);
+        assert!(result.is_ok());
+    }
+
+    #[test]
     pub fn assert_stereo_to_mono_err() {
         let samples = random_sample_data::<f32>();
-        let mono = convert_stereo_to_mono_audio(&samples);
-        assert!(mono.is_err());
+        let mut output = vec![0.0; (samples.len() / 2) - 1];
+        let result = convert_stereo_to_mono_audio(&samples, &mut output);
+        assert!(
+            match result {
+                Err(WhisperError::InputOutputLengthMismatch {
+                    input_len,
+                    output_len,
+                }) => {
+                    assert_eq!(
+                        input_len,
+                        samples.len() / 2,
+                        "resulting input length is not half of num samples"
+                    );
+                    assert_eq!(
+                        output_len,
+                        output.len(),
+                        "resulting output length is not the same as the output array"
+                    );
+                    true
+                }
+                _ => false,
+            },
+            "result was not a length mismatch: got {:?}",
+            result
+        );
     }
 
     #[bench]
     pub fn bench_stereo_to_mono(b: &mut test::Bencher) {
         let samples = random_sample_data::<f32>();
-        b.iter(|| black_box(convert_stereo_to_mono_audio(black_box(&samples))));
+        let mut output = vec![0.0; samples.len() / 2];
+        b.iter(|| {
+            black_box(convert_stereo_to_mono_audio(
+                black_box(&samples),
+                black_box(&mut output),
+            ))
+        });
     }
 
     #[bench]
