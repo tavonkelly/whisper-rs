@@ -66,7 +66,7 @@ impl<'a, 'b> WhisperToken<'a, 'b> {
         }
     }
 
-    fn to_raw_cstr(&self) -> Result<&CStr, WhisperError> {
+    fn to_raw_cstr(&self) -> Result<&'b CStr, WhisperError> {
         let ret = unsafe {
             whisper_rs_sys::whisper_full_get_token_text_from_state(
                 self.segment.get_state().ctx.ctx,
@@ -92,7 +92,7 @@ impl<'a, 'b> WhisperToken<'a, 'b> {
     ///
     /// # C++ equivalent
     /// `const char * whisper_full_get_token_text(struct whisper_context * ctx, int i_segment, int i_token)`
-    pub fn to_bytes(&self) -> Result<&[u8], WhisperError> {
+    pub fn to_bytes(&self) -> Result<&'b [u8], WhisperError> {
         Ok(self.to_raw_cstr()?.to_bytes())
     }
 
@@ -104,7 +104,7 @@ impl<'a, 'b> WhisperToken<'a, 'b> {
     ///
     /// # C++ equivalent
     /// `const char * whisper_full_get_token_text(struct whisper_context * ctx, int i_segment, int i_token)`
-    pub fn to_str(&self) -> Result<&str, WhisperError> {
+    pub fn to_str(&self) -> Result<&'b str, WhisperError> {
         Ok(self.to_raw_cstr()?.to_str()?)
     }
 
@@ -120,7 +120,7 @@ impl<'a, 'b> WhisperToken<'a, 'b> {
     ///
     /// # C++ equivalent
     /// `const char * whisper_full_get_token_text(struct whisper_context * ctx, int i_segment, int i_token)`
-    pub fn to_str_lossy(&self) -> Result<Cow<'_, str>, WhisperError> {
+    pub fn to_str_lossy(&self) -> Result<Cow<'b, str>, WhisperError> {
         Ok(self.to_raw_cstr()?.to_string_lossy())
     }
 }
