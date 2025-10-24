@@ -280,7 +280,7 @@ impl WhisperState {
     ///   See utilities in the root of this crate for functions to convert audio to this format.
     ///
     /// # Returns
-    /// Ok(c_int) on success, Err(WhisperError) on failure.
+    /// Ok(()) on success, Err(WhisperError) on failure.
     ///
     /// # C++ equivalent
     /// `int whisper_full_with_state(
@@ -289,7 +289,7 @@ impl WhisperState {
     ///             struct whisper_full_params   params,
     ///                            const float * samples,
     ///                                    int   n_samples)`
-    pub fn full(&mut self, params: FullParams, data: &[f32]) -> Result<c_int, WhisperError> {
+    pub fn full(&mut self, params: FullParams, data: &[f32]) -> Result<(), WhisperError> {
         if data.is_empty() {
             // can randomly trigger segmentation faults if we don't check this
             return Err(WhisperError::NoSamples);
@@ -311,7 +311,7 @@ impl WhisperState {
         } else if ret == 8 {
             Err(WhisperError::FailedToDecode)
         } else if ret == 0 {
-            Ok(ret)
+            Ok(())
         } else {
             Err(WhisperError::GenericError(ret))
         }
