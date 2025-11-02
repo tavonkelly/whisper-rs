@@ -102,7 +102,7 @@ fn main() {
     println!("cargo:rerun-if-changed=wrapper.h");
 
     let out = PathBuf::from(env::var("OUT_DIR").unwrap());
-    let whisper_root = out.join("whisper.cpp/");
+    let whisper_root = out.join("whisper.cpp");
 
     if !whisper_root.exists() {
         std::fs::create_dir_all(&whisper_root).unwrap();
