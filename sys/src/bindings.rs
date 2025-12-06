@@ -183,7 +183,7 @@ pub const __STDC_IEC_60559_COMPLEX__: u32 = 201404;
 pub const __STDC_ISO_10646__: u32 = 201706;
 pub const __GNU_LIBRARY__: u32 = 6;
 pub const __GLIBC__: u32 = 2;
-pub const __GLIBC_MINOR__: u32 = 41;
+pub const __GLIBC_MINOR__: u32 = 42;
 pub const _SYS_CDEFS_H: u32 = 1;
 pub const __glibc_c99_flexarr_available: u32 = 1;
 pub const __LDOUBLE_REDIRECTS_TO_FLOAT128_ABI: u32 = 0;
@@ -302,9 +302,11 @@ pub const GGML_DEFAULT_GRAPH_SIZE: u32 = 2048;
 pub const GGML_MEM_ALIGN: u32 = 16;
 pub const GGML_EXIT_SUCCESS: u32 = 0;
 pub const GGML_EXIT_ABORTED: u32 = 1;
+pub const GGML_ROPE_TYPE_NORMAL: u32 = 0;
 pub const GGML_ROPE_TYPE_NEOX: u32 = 2;
 pub const GGML_ROPE_TYPE_MROPE: u32 = 8;
 pub const GGML_ROPE_TYPE_VISION: u32 = 24;
+pub const GGML_ROPE_TYPE_IMROPE: u32 = 40;
 pub const GGML_MROPE_SECTIONS: u32 = 4;
 pub const GGML_KQ_MASK_PAD: u32 = 64;
 pub const GGML_N_TASKS_MAX: i32 = -1;
@@ -534,7 +536,9 @@ pub struct _IO_FILE {
     pub _freeres_buf: *mut ::std::os::raw::c_void,
     pub _prevchain: *mut *mut _IO_FILE,
     pub _mode: ::std::os::raw::c_int,
-    pub _unused2: [::std::os::raw::c_char; 20usize],
+    pub _unused3: ::std::os::raw::c_int,
+    pub _total_written: __uint64_t,
+    pub _unused2: [::std::os::raw::c_char; 8usize],
 }
 #[allow(clippy::unnecessary_operation, clippy::identity_op)]
 const _: () = {
@@ -588,7 +592,10 @@ const _: () = {
     ["Offset of field: _IO_FILE::_prevchain"]
         [::std::mem::offset_of!(_IO_FILE, _prevchain) - 184usize];
     ["Offset of field: _IO_FILE::_mode"][::std::mem::offset_of!(_IO_FILE, _mode) - 192usize];
-    ["Offset of field: _IO_FILE::_unused2"][::std::mem::offset_of!(_IO_FILE, _unused2) - 196usize];
+    ["Offset of field: _IO_FILE::_unused3"][::std::mem::offset_of!(_IO_FILE, _unused3) - 196usize];
+    ["Offset of field: _IO_FILE::_total_written"]
+        [::std::mem::offset_of!(_IO_FILE, _total_written) - 200usize];
+    ["Offset of field: _IO_FILE::_unused2"][::std::mem::offset_of!(_IO_FILE, _unused2) - 208usize];
 };
 impl _IO_FILE {
     #[inline]
@@ -1314,79 +1321,85 @@ pub const ggml_op_GGML_OP_SIN: ggml_op = 12;
 pub const ggml_op_GGML_OP_COS: ggml_op = 13;
 pub const ggml_op_GGML_OP_SUM: ggml_op = 14;
 pub const ggml_op_GGML_OP_SUM_ROWS: ggml_op = 15;
-pub const ggml_op_GGML_OP_MEAN: ggml_op = 16;
-pub const ggml_op_GGML_OP_ARGMAX: ggml_op = 17;
-pub const ggml_op_GGML_OP_COUNT_EQUAL: ggml_op = 18;
-pub const ggml_op_GGML_OP_REPEAT: ggml_op = 19;
-pub const ggml_op_GGML_OP_REPEAT_BACK: ggml_op = 20;
-pub const ggml_op_GGML_OP_CONCAT: ggml_op = 21;
-pub const ggml_op_GGML_OP_SILU_BACK: ggml_op = 22;
-pub const ggml_op_GGML_OP_NORM: ggml_op = 23;
-pub const ggml_op_GGML_OP_RMS_NORM: ggml_op = 24;
-pub const ggml_op_GGML_OP_RMS_NORM_BACK: ggml_op = 25;
-pub const ggml_op_GGML_OP_GROUP_NORM: ggml_op = 26;
-pub const ggml_op_GGML_OP_L2_NORM: ggml_op = 27;
-pub const ggml_op_GGML_OP_MUL_MAT: ggml_op = 28;
-pub const ggml_op_GGML_OP_MUL_MAT_ID: ggml_op = 29;
-pub const ggml_op_GGML_OP_OUT_PROD: ggml_op = 30;
-pub const ggml_op_GGML_OP_SCALE: ggml_op = 31;
-pub const ggml_op_GGML_OP_SET: ggml_op = 32;
-pub const ggml_op_GGML_OP_CPY: ggml_op = 33;
-pub const ggml_op_GGML_OP_CONT: ggml_op = 34;
-pub const ggml_op_GGML_OP_RESHAPE: ggml_op = 35;
-pub const ggml_op_GGML_OP_VIEW: ggml_op = 36;
-pub const ggml_op_GGML_OP_PERMUTE: ggml_op = 37;
-pub const ggml_op_GGML_OP_TRANSPOSE: ggml_op = 38;
-pub const ggml_op_GGML_OP_GET_ROWS: ggml_op = 39;
-pub const ggml_op_GGML_OP_GET_ROWS_BACK: ggml_op = 40;
-pub const ggml_op_GGML_OP_SET_ROWS: ggml_op = 41;
-pub const ggml_op_GGML_OP_DIAG: ggml_op = 42;
-pub const ggml_op_GGML_OP_DIAG_MASK_INF: ggml_op = 43;
-pub const ggml_op_GGML_OP_DIAG_MASK_ZERO: ggml_op = 44;
-pub const ggml_op_GGML_OP_SOFT_MAX: ggml_op = 45;
-pub const ggml_op_GGML_OP_SOFT_MAX_BACK: ggml_op = 46;
-pub const ggml_op_GGML_OP_ROPE: ggml_op = 47;
-pub const ggml_op_GGML_OP_ROPE_BACK: ggml_op = 48;
-pub const ggml_op_GGML_OP_CLAMP: ggml_op = 49;
-pub const ggml_op_GGML_OP_CONV_TRANSPOSE_1D: ggml_op = 50;
-pub const ggml_op_GGML_OP_IM2COL: ggml_op = 51;
-pub const ggml_op_GGML_OP_IM2COL_BACK: ggml_op = 52;
-pub const ggml_op_GGML_OP_CONV_2D: ggml_op = 53;
-pub const ggml_op_GGML_OP_CONV_2D_DW: ggml_op = 54;
-pub const ggml_op_GGML_OP_CONV_TRANSPOSE_2D: ggml_op = 55;
-pub const ggml_op_GGML_OP_POOL_1D: ggml_op = 56;
-pub const ggml_op_GGML_OP_POOL_2D: ggml_op = 57;
-pub const ggml_op_GGML_OP_POOL_2D_BACK: ggml_op = 58;
-pub const ggml_op_GGML_OP_UPSCALE: ggml_op = 59;
-pub const ggml_op_GGML_OP_PAD: ggml_op = 60;
-pub const ggml_op_GGML_OP_PAD_REFLECT_1D: ggml_op = 61;
-pub const ggml_op_GGML_OP_ROLL: ggml_op = 62;
-pub const ggml_op_GGML_OP_ARANGE: ggml_op = 63;
-pub const ggml_op_GGML_OP_TIMESTEP_EMBEDDING: ggml_op = 64;
-pub const ggml_op_GGML_OP_ARGSORT: ggml_op = 65;
-pub const ggml_op_GGML_OP_LEAKY_RELU: ggml_op = 66;
-pub const ggml_op_GGML_OP_FLASH_ATTN_EXT: ggml_op = 67;
-pub const ggml_op_GGML_OP_FLASH_ATTN_BACK: ggml_op = 68;
-pub const ggml_op_GGML_OP_SSM_CONV: ggml_op = 69;
-pub const ggml_op_GGML_OP_SSM_SCAN: ggml_op = 70;
-pub const ggml_op_GGML_OP_WIN_PART: ggml_op = 71;
-pub const ggml_op_GGML_OP_WIN_UNPART: ggml_op = 72;
-pub const ggml_op_GGML_OP_GET_REL_POS: ggml_op = 73;
-pub const ggml_op_GGML_OP_ADD_REL_POS: ggml_op = 74;
-pub const ggml_op_GGML_OP_RWKV_WKV6: ggml_op = 75;
-pub const ggml_op_GGML_OP_GATED_LINEAR_ATTN: ggml_op = 76;
-pub const ggml_op_GGML_OP_RWKV_WKV7: ggml_op = 77;
-pub const ggml_op_GGML_OP_UNARY: ggml_op = 78;
-pub const ggml_op_GGML_OP_MAP_CUSTOM1: ggml_op = 79;
-pub const ggml_op_GGML_OP_MAP_CUSTOM2: ggml_op = 80;
-pub const ggml_op_GGML_OP_MAP_CUSTOM3: ggml_op = 81;
-pub const ggml_op_GGML_OP_CUSTOM: ggml_op = 82;
-pub const ggml_op_GGML_OP_CROSS_ENTROPY_LOSS: ggml_op = 83;
-pub const ggml_op_GGML_OP_CROSS_ENTROPY_LOSS_BACK: ggml_op = 84;
-pub const ggml_op_GGML_OP_OPT_STEP_ADAMW: ggml_op = 85;
-pub const ggml_op_GGML_OP_OPT_STEP_SGD: ggml_op = 86;
-pub const ggml_op_GGML_OP_GLU: ggml_op = 87;
-pub const ggml_op_GGML_OP_COUNT: ggml_op = 88;
+pub const ggml_op_GGML_OP_CUMSUM: ggml_op = 16;
+pub const ggml_op_GGML_OP_MEAN: ggml_op = 17;
+pub const ggml_op_GGML_OP_ARGMAX: ggml_op = 18;
+pub const ggml_op_GGML_OP_COUNT_EQUAL: ggml_op = 19;
+pub const ggml_op_GGML_OP_REPEAT: ggml_op = 20;
+pub const ggml_op_GGML_OP_REPEAT_BACK: ggml_op = 21;
+pub const ggml_op_GGML_OP_CONCAT: ggml_op = 22;
+pub const ggml_op_GGML_OP_SILU_BACK: ggml_op = 23;
+pub const ggml_op_GGML_OP_NORM: ggml_op = 24;
+pub const ggml_op_GGML_OP_RMS_NORM: ggml_op = 25;
+pub const ggml_op_GGML_OP_RMS_NORM_BACK: ggml_op = 26;
+pub const ggml_op_GGML_OP_GROUP_NORM: ggml_op = 27;
+pub const ggml_op_GGML_OP_L2_NORM: ggml_op = 28;
+pub const ggml_op_GGML_OP_MUL_MAT: ggml_op = 29;
+pub const ggml_op_GGML_OP_MUL_MAT_ID: ggml_op = 30;
+pub const ggml_op_GGML_OP_OUT_PROD: ggml_op = 31;
+pub const ggml_op_GGML_OP_SCALE: ggml_op = 32;
+pub const ggml_op_GGML_OP_SET: ggml_op = 33;
+pub const ggml_op_GGML_OP_CPY: ggml_op = 34;
+pub const ggml_op_GGML_OP_CONT: ggml_op = 35;
+pub const ggml_op_GGML_OP_RESHAPE: ggml_op = 36;
+pub const ggml_op_GGML_OP_VIEW: ggml_op = 37;
+pub const ggml_op_GGML_OP_PERMUTE: ggml_op = 38;
+pub const ggml_op_GGML_OP_TRANSPOSE: ggml_op = 39;
+pub const ggml_op_GGML_OP_GET_ROWS: ggml_op = 40;
+pub const ggml_op_GGML_OP_GET_ROWS_BACK: ggml_op = 41;
+pub const ggml_op_GGML_OP_SET_ROWS: ggml_op = 42;
+pub const ggml_op_GGML_OP_DIAG: ggml_op = 43;
+pub const ggml_op_GGML_OP_DIAG_MASK_INF: ggml_op = 44;
+pub const ggml_op_GGML_OP_DIAG_MASK_ZERO: ggml_op = 45;
+pub const ggml_op_GGML_OP_SOFT_MAX: ggml_op = 46;
+pub const ggml_op_GGML_OP_SOFT_MAX_BACK: ggml_op = 47;
+pub const ggml_op_GGML_OP_ROPE: ggml_op = 48;
+pub const ggml_op_GGML_OP_ROPE_BACK: ggml_op = 49;
+pub const ggml_op_GGML_OP_CLAMP: ggml_op = 50;
+pub const ggml_op_GGML_OP_CONV_TRANSPOSE_1D: ggml_op = 51;
+pub const ggml_op_GGML_OP_IM2COL: ggml_op = 52;
+pub const ggml_op_GGML_OP_IM2COL_BACK: ggml_op = 53;
+pub const ggml_op_GGML_OP_IM2COL_3D: ggml_op = 54;
+pub const ggml_op_GGML_OP_CONV_2D: ggml_op = 55;
+pub const ggml_op_GGML_OP_CONV_3D: ggml_op = 56;
+pub const ggml_op_GGML_OP_CONV_2D_DW: ggml_op = 57;
+pub const ggml_op_GGML_OP_CONV_TRANSPOSE_2D: ggml_op = 58;
+pub const ggml_op_GGML_OP_POOL_1D: ggml_op = 59;
+pub const ggml_op_GGML_OP_POOL_2D: ggml_op = 60;
+pub const ggml_op_GGML_OP_POOL_2D_BACK: ggml_op = 61;
+pub const ggml_op_GGML_OP_UPSCALE: ggml_op = 62;
+pub const ggml_op_GGML_OP_PAD: ggml_op = 63;
+pub const ggml_op_GGML_OP_PAD_REFLECT_1D: ggml_op = 64;
+pub const ggml_op_GGML_OP_ROLL: ggml_op = 65;
+pub const ggml_op_GGML_OP_ARANGE: ggml_op = 66;
+pub const ggml_op_GGML_OP_TIMESTEP_EMBEDDING: ggml_op = 67;
+pub const ggml_op_GGML_OP_ARGSORT: ggml_op = 68;
+pub const ggml_op_GGML_OP_LEAKY_RELU: ggml_op = 69;
+pub const ggml_op_GGML_OP_TRI: ggml_op = 70;
+pub const ggml_op_GGML_OP_FILL: ggml_op = 71;
+pub const ggml_op_GGML_OP_FLASH_ATTN_EXT: ggml_op = 72;
+pub const ggml_op_GGML_OP_FLASH_ATTN_BACK: ggml_op = 73;
+pub const ggml_op_GGML_OP_SSM_CONV: ggml_op = 74;
+pub const ggml_op_GGML_OP_SSM_SCAN: ggml_op = 75;
+pub const ggml_op_GGML_OP_WIN_PART: ggml_op = 76;
+pub const ggml_op_GGML_OP_WIN_UNPART: ggml_op = 77;
+pub const ggml_op_GGML_OP_GET_REL_POS: ggml_op = 78;
+pub const ggml_op_GGML_OP_ADD_REL_POS: ggml_op = 79;
+pub const ggml_op_GGML_OP_RWKV_WKV6: ggml_op = 80;
+pub const ggml_op_GGML_OP_GATED_LINEAR_ATTN: ggml_op = 81;
+pub const ggml_op_GGML_OP_RWKV_WKV7: ggml_op = 82;
+pub const ggml_op_GGML_OP_SOLVE_TRI: ggml_op = 83;
+pub const ggml_op_GGML_OP_UNARY: ggml_op = 84;
+pub const ggml_op_GGML_OP_MAP_CUSTOM1: ggml_op = 85;
+pub const ggml_op_GGML_OP_MAP_CUSTOM2: ggml_op = 86;
+pub const ggml_op_GGML_OP_MAP_CUSTOM3: ggml_op = 87;
+pub const ggml_op_GGML_OP_CUSTOM: ggml_op = 88;
+pub const ggml_op_GGML_OP_CROSS_ENTROPY_LOSS: ggml_op = 89;
+pub const ggml_op_GGML_OP_CROSS_ENTROPY_LOSS_BACK: ggml_op = 90;
+pub const ggml_op_GGML_OP_OPT_STEP_ADAMW: ggml_op = 91;
+pub const ggml_op_GGML_OP_OPT_STEP_SGD: ggml_op = 92;
+pub const ggml_op_GGML_OP_GLU: ggml_op = 93;
+pub const ggml_op_GGML_OP_COUNT: ggml_op = 94;
 pub type ggml_op = ::std::os::raw::c_uint;
 pub const ggml_unary_op_GGML_UNARY_OP_ABS: ggml_unary_op = 0;
 pub const ggml_unary_op_GGML_UNARY_OP_SGN: ggml_unary_op = 1;
@@ -1402,8 +1415,15 @@ pub const ggml_unary_op_GGML_UNARY_OP_SILU: ggml_unary_op = 10;
 pub const ggml_unary_op_GGML_UNARY_OP_HARDSWISH: ggml_unary_op = 11;
 pub const ggml_unary_op_GGML_UNARY_OP_HARDSIGMOID: ggml_unary_op = 12;
 pub const ggml_unary_op_GGML_UNARY_OP_EXP: ggml_unary_op = 13;
-pub const ggml_unary_op_GGML_UNARY_OP_GELU_ERF: ggml_unary_op = 14;
-pub const ggml_unary_op_GGML_UNARY_OP_COUNT: ggml_unary_op = 15;
+pub const ggml_unary_op_GGML_UNARY_OP_EXPM1: ggml_unary_op = 14;
+pub const ggml_unary_op_GGML_UNARY_OP_SOFTPLUS: ggml_unary_op = 15;
+pub const ggml_unary_op_GGML_UNARY_OP_GELU_ERF: ggml_unary_op = 16;
+pub const ggml_unary_op_GGML_UNARY_OP_XIELU: ggml_unary_op = 17;
+pub const ggml_unary_op_GGML_UNARY_OP_FLOOR: ggml_unary_op = 18;
+pub const ggml_unary_op_GGML_UNARY_OP_CEIL: ggml_unary_op = 19;
+pub const ggml_unary_op_GGML_UNARY_OP_ROUND: ggml_unary_op = 20;
+pub const ggml_unary_op_GGML_UNARY_OP_TRUNC: ggml_unary_op = 21;
+pub const ggml_unary_op_GGML_UNARY_OP_COUNT: ggml_unary_op = 22;
 pub type ggml_unary_op = ::std::os::raw::c_uint;
 pub const ggml_glu_op_GGML_GLU_OP_REGLU: ggml_glu_op = 0;
 pub const ggml_glu_op_GGML_GLU_OP_GEGLU: ggml_glu_op = 1;
@@ -1429,6 +1449,11 @@ pub const ggml_tensor_flag_GGML_TENSOR_FLAG_OUTPUT: ggml_tensor_flag = 2;
 pub const ggml_tensor_flag_GGML_TENSOR_FLAG_PARAM: ggml_tensor_flag = 4;
 pub const ggml_tensor_flag_GGML_TENSOR_FLAG_LOSS: ggml_tensor_flag = 8;
 pub type ggml_tensor_flag = ::std::os::raw::c_uint;
+pub const ggml_tri_type_GGML_TRI_TYPE_UPPER_DIAG: ggml_tri_type = 0;
+pub const ggml_tri_type_GGML_TRI_TYPE_UPPER: ggml_tri_type = 1;
+pub const ggml_tri_type_GGML_TRI_TYPE_LOWER_DIAG: ggml_tri_type = 2;
+pub const ggml_tri_type_GGML_TRI_TYPE_LOWER: ggml_tri_type = 3;
+pub type ggml_tri_type = ::std::os::raw::c_uint;
 #[repr(C)]
 #[derive(Debug, Copy, Clone)]
 pub struct ggml_init_params {
@@ -1920,6 +1945,18 @@ unsafe extern "C" {
     pub fn ggml_log_inplace(ctx: *mut ggml_context, a: *mut ggml_tensor) -> *mut ggml_tensor;
 }
 unsafe extern "C" {
+    pub fn ggml_expm1(ctx: *mut ggml_context, a: *mut ggml_tensor) -> *mut ggml_tensor;
+}
+unsafe extern "C" {
+    pub fn ggml_expm1_inplace(ctx: *mut ggml_context, a: *mut ggml_tensor) -> *mut ggml_tensor;
+}
+unsafe extern "C" {
+    pub fn ggml_softplus(ctx: *mut ggml_context, a: *mut ggml_tensor) -> *mut ggml_tensor;
+}
+unsafe extern "C" {
+    pub fn ggml_softplus_inplace(ctx: *mut ggml_context, a: *mut ggml_tensor) -> *mut ggml_tensor;
+}
+unsafe extern "C" {
     pub fn ggml_sin(ctx: *mut ggml_context, a: *mut ggml_tensor) -> *mut ggml_tensor;
 }
 unsafe extern "C" {
@@ -1936,6 +1973,9 @@ unsafe extern "C" {
 }
 unsafe extern "C" {
     pub fn ggml_sum_rows(ctx: *mut ggml_context, a: *mut ggml_tensor) -> *mut ggml_tensor;
+}
+unsafe extern "C" {
+    pub fn ggml_cumsum(ctx: *mut ggml_context, a: *mut ggml_tensor) -> *mut ggml_tensor;
 }
 unsafe extern "C" {
     pub fn ggml_mean(ctx: *mut ggml_context, a: *mut ggml_tensor) -> *mut ggml_tensor;
@@ -2081,6 +2121,41 @@ unsafe extern "C" {
 }
 unsafe extern "C" {
     pub fn ggml_exp_inplace(ctx: *mut ggml_context, a: *mut ggml_tensor) -> *mut ggml_tensor;
+}
+unsafe extern "C" {
+    pub fn ggml_floor(ctx: *mut ggml_context, a: *mut ggml_tensor) -> *mut ggml_tensor;
+}
+unsafe extern "C" {
+    pub fn ggml_floor_inplace(ctx: *mut ggml_context, a: *mut ggml_tensor) -> *mut ggml_tensor;
+}
+unsafe extern "C" {
+    pub fn ggml_ceil(ctx: *mut ggml_context, a: *mut ggml_tensor) -> *mut ggml_tensor;
+}
+unsafe extern "C" {
+    pub fn ggml_ceil_inplace(ctx: *mut ggml_context, a: *mut ggml_tensor) -> *mut ggml_tensor;
+}
+unsafe extern "C" {
+    pub fn ggml_round(ctx: *mut ggml_context, a: *mut ggml_tensor) -> *mut ggml_tensor;
+}
+unsafe extern "C" {
+    pub fn ggml_round_inplace(ctx: *mut ggml_context, a: *mut ggml_tensor) -> *mut ggml_tensor;
+}
+unsafe extern "C" {
+    #[doc = " Truncates the fractional part of each element in the tensor (towards zero).\n For example: trunc(3.7) = 3.0, trunc(-2.9) = -2.0\n Similar to std::trunc in C/C++."]
+    pub fn ggml_trunc(ctx: *mut ggml_context, a: *mut ggml_tensor) -> *mut ggml_tensor;
+}
+unsafe extern "C" {
+    pub fn ggml_trunc_inplace(ctx: *mut ggml_context, a: *mut ggml_tensor) -> *mut ggml_tensor;
+}
+unsafe extern "C" {
+    pub fn ggml_xielu(
+        ctx: *mut ggml_context,
+        a: *mut ggml_tensor,
+        alpha_n: f32,
+        alpha_p: f32,
+        beta: f32,
+        eps: f32,
+    ) -> *mut ggml_tensor;
 }
 unsafe extern "C" {
     pub fn ggml_glu(
@@ -2552,6 +2627,15 @@ unsafe extern "C" {
     ) -> *mut ggml_tensor;
 }
 unsafe extern "C" {
+    pub fn ggml_soft_max_ext_inplace(
+        ctx: *mut ggml_context,
+        a: *mut ggml_tensor,
+        mask: *mut ggml_tensor,
+        scale: f32,
+        max_bias: f32,
+    ) -> *mut ggml_tensor;
+}
+unsafe extern "C" {
     pub fn ggml_soft_max_add_sinks(a: *mut ggml_tensor, sinks: *mut ggml_tensor);
 }
 unsafe extern "C" {
@@ -2837,6 +2921,41 @@ unsafe extern "C" {
     ) -> *mut ggml_tensor;
 }
 unsafe extern "C" {
+    pub fn ggml_im2col_3d(
+        ctx: *mut ggml_context,
+        a: *mut ggml_tensor,
+        b: *mut ggml_tensor,
+        IC: i64,
+        s0: ::std::os::raw::c_int,
+        s1: ::std::os::raw::c_int,
+        s2: ::std::os::raw::c_int,
+        p0: ::std::os::raw::c_int,
+        p1: ::std::os::raw::c_int,
+        p2: ::std::os::raw::c_int,
+        d0: ::std::os::raw::c_int,
+        d1: ::std::os::raw::c_int,
+        d2: ::std::os::raw::c_int,
+        dst_type: ggml_type,
+    ) -> *mut ggml_tensor;
+}
+unsafe extern "C" {
+    pub fn ggml_conv_3d(
+        ctx: *mut ggml_context,
+        a: *mut ggml_tensor,
+        b: *mut ggml_tensor,
+        IC: i64,
+        s0: ::std::os::raw::c_int,
+        s1: ::std::os::raw::c_int,
+        s2: ::std::os::raw::c_int,
+        p0: ::std::os::raw::c_int,
+        p1: ::std::os::raw::c_int,
+        p2: ::std::os::raw::c_int,
+        d0: ::std::os::raw::c_int,
+        d1: ::std::os::raw::c_int,
+        d2: ::std::os::raw::c_int,
+    ) -> *mut ggml_tensor;
+}
+unsafe extern "C" {
     pub fn ggml_conv_2d_sk_p0(
         ctx: *mut ggml_context,
         a: *mut ggml_tensor,
@@ -2897,6 +3016,25 @@ unsafe extern "C" {
         d1: ::std::os::raw::c_int,
     ) -> *mut ggml_tensor;
 }
+unsafe extern "C" {
+    pub fn ggml_conv_3d_direct(
+        ctx: *mut ggml_context,
+        a: *mut ggml_tensor,
+        b: *mut ggml_tensor,
+        s0: ::std::os::raw::c_int,
+        s1: ::std::os::raw::c_int,
+        s2: ::std::os::raw::c_int,
+        p0: ::std::os::raw::c_int,
+        p1: ::std::os::raw::c_int,
+        p2: ::std::os::raw::c_int,
+        d0: ::std::os::raw::c_int,
+        d1: ::std::os::raw::c_int,
+        d2: ::std::os::raw::c_int,
+        n_channels: ::std::os::raw::c_int,
+        n_batch: ::std::os::raw::c_int,
+        n_channels_out: ::std::os::raw::c_int,
+    ) -> *mut ggml_tensor;
+}
 pub const ggml_op_pool_GGML_OP_POOL_MAX: ggml_op_pool = 0;
 pub const ggml_op_pool_GGML_OP_POOL_AVG: ggml_op_pool = 1;
 pub const ggml_op_pool_GGML_OP_POOL_COUNT: ggml_op_pool = 2;
@@ -2940,7 +3078,8 @@ unsafe extern "C" {
 }
 pub const ggml_scale_mode_GGML_SCALE_MODE_NEAREST: ggml_scale_mode = 0;
 pub const ggml_scale_mode_GGML_SCALE_MODE_BILINEAR: ggml_scale_mode = 1;
-pub const ggml_scale_mode_GGML_SCALE_MODE_COUNT: ggml_scale_mode = 2;
+pub const ggml_scale_mode_GGML_SCALE_MODE_BICUBIC: ggml_scale_mode = 2;
+pub const ggml_scale_mode_GGML_SCALE_MODE_COUNT: ggml_scale_mode = 3;
 pub type ggml_scale_mode = ::std::os::raw::c_uint;
 pub const ggml_scale_flag_GGML_SCALE_FLAG_ALIGN_CORNERS: ggml_scale_flag = 256;
 pub type ggml_scale_flag = ::std::os::raw::c_uint;
@@ -2985,6 +3124,20 @@ unsafe extern "C" {
     ) -> *mut ggml_tensor;
 }
 unsafe extern "C" {
+    pub fn ggml_pad_ext(
+        ctx: *mut ggml_context,
+        a: *mut ggml_tensor,
+        lp0: ::std::os::raw::c_int,
+        rp0: ::std::os::raw::c_int,
+        lp1: ::std::os::raw::c_int,
+        rp1: ::std::os::raw::c_int,
+        lp2: ::std::os::raw::c_int,
+        rp2: ::std::os::raw::c_int,
+        lp3: ::std::os::raw::c_int,
+        rp3: ::std::os::raw::c_int,
+    ) -> *mut ggml_tensor;
+}
+unsafe extern "C" {
     pub fn ggml_pad_reflect_1d(
         ctx: *mut ggml_context,
         a: *mut ggml_tensor,
@@ -3000,6 +3153,23 @@ unsafe extern "C" {
         shift1: ::std::os::raw::c_int,
         shift2: ::std::os::raw::c_int,
         shift3: ::std::os::raw::c_int,
+    ) -> *mut ggml_tensor;
+}
+unsafe extern "C" {
+    pub fn ggml_tri(
+        ctx: *mut ggml_context,
+        a: *mut ggml_tensor,
+        type_: ggml_tri_type,
+    ) -> *mut ggml_tensor;
+}
+unsafe extern "C" {
+    pub fn ggml_fill(ctx: *mut ggml_context, a: *mut ggml_tensor, c: f32) -> *mut ggml_tensor;
+}
+unsafe extern "C" {
+    pub fn ggml_fill_inplace(
+        ctx: *mut ggml_context,
+        a: *mut ggml_tensor,
+        c: f32,
     ) -> *mut ggml_tensor;
 }
 unsafe extern "C" {
@@ -3171,6 +3341,16 @@ unsafe extern "C" {
         a: *mut ggml_tensor,
         b: *mut ggml_tensor,
         state: *mut ggml_tensor,
+    ) -> *mut ggml_tensor;
+}
+unsafe extern "C" {
+    pub fn ggml_solve_tri(
+        ctx: *mut ggml_context,
+        a: *mut ggml_tensor,
+        b: *mut ggml_tensor,
+        left: bool,
+        lower: bool,
+        uni: bool,
     ) -> *mut ggml_tensor;
 }
 pub type ggml_custom1_op_t = ::std::option::Option<
@@ -3884,7 +4064,8 @@ unsafe extern "C" {
 }
 pub const ggml_backend_dev_type_GGML_BACKEND_DEVICE_TYPE_CPU: ggml_backend_dev_type = 0;
 pub const ggml_backend_dev_type_GGML_BACKEND_DEVICE_TYPE_GPU: ggml_backend_dev_type = 1;
-pub const ggml_backend_dev_type_GGML_BACKEND_DEVICE_TYPE_ACCEL: ggml_backend_dev_type = 2;
+pub const ggml_backend_dev_type_GGML_BACKEND_DEVICE_TYPE_IGPU: ggml_backend_dev_type = 2;
+pub const ggml_backend_dev_type_GGML_BACKEND_DEVICE_TYPE_ACCEL: ggml_backend_dev_type = 3;
 pub type ggml_backend_dev_type = ::std::os::raw::c_uint;
 #[repr(C)]
 #[derive(Debug, Copy, Clone)]
@@ -3916,11 +4097,12 @@ pub struct ggml_backend_dev_props {
     pub memory_free: usize,
     pub memory_total: usize,
     pub type_: ggml_backend_dev_type,
+    pub device_id: *const ::std::os::raw::c_char,
     pub caps: ggml_backend_dev_caps,
 }
 #[allow(clippy::unnecessary_operation, clippy::identity_op)]
 const _: () = {
-    ["Size of ggml_backend_dev_props"][::std::mem::size_of::<ggml_backend_dev_props>() - 40usize];
+    ["Size of ggml_backend_dev_props"][::std::mem::size_of::<ggml_backend_dev_props>() - 56usize];
     ["Alignment of ggml_backend_dev_props"]
         [::std::mem::align_of::<ggml_backend_dev_props>() - 8usize];
     ["Offset of field: ggml_backend_dev_props::name"]
@@ -3933,8 +4115,10 @@ const _: () = {
         [::std::mem::offset_of!(ggml_backend_dev_props, memory_total) - 24usize];
     ["Offset of field: ggml_backend_dev_props::type_"]
         [::std::mem::offset_of!(ggml_backend_dev_props, type_) - 32usize];
+    ["Offset of field: ggml_backend_dev_props::device_id"]
+        [::std::mem::offset_of!(ggml_backend_dev_props, device_id) - 40usize];
     ["Offset of field: ggml_backend_dev_props::caps"]
-        [::std::mem::offset_of!(ggml_backend_dev_props, caps) - 36usize];
+        [::std::mem::offset_of!(ggml_backend_dev_props, caps) - 48usize];
 };
 unsafe extern "C" {
     pub fn ggml_backend_dev_name(device: ggml_backend_dev_t) -> *const ::std::os::raw::c_char;
@@ -4047,6 +4231,9 @@ pub type ggml_backend_get_features_t = ::std::option::Option<
     unsafe extern "C" fn(reg: ggml_backend_reg_t) -> *mut ggml_backend_feature,
 >;
 unsafe extern "C" {
+    pub fn ggml_backend_register(reg: ggml_backend_reg_t);
+}
+unsafe extern "C" {
     pub fn ggml_backend_device_register(device: ggml_backend_dev_t);
 }
 unsafe extern "C" {
@@ -4145,6 +4332,12 @@ unsafe extern "C" {
     pub fn ggml_backend_sched_get_n_copies(sched: ggml_backend_sched_t) -> ::std::os::raw::c_int;
 }
 unsafe extern "C" {
+    pub fn ggml_backend_sched_get_buffer_type(
+        sched: ggml_backend_sched_t,
+        backend: ggml_backend_t,
+    ) -> ggml_backend_buffer_type_t;
+}
+unsafe extern "C" {
     pub fn ggml_backend_sched_get_buffer_size(
         sched: ggml_backend_sched_t,
         backend: ggml_backend_t,
@@ -4162,6 +4355,9 @@ unsafe extern "C" {
         sched: ggml_backend_sched_t,
         node: *mut ggml_tensor,
     ) -> ggml_backend_t;
+}
+unsafe extern "C" {
+    pub fn ggml_backend_sched_split_graph(sched: ggml_backend_sched_t, graph: *mut ggml_cgraph);
 }
 unsafe extern "C" {
     pub fn ggml_backend_sched_alloc_graph(
@@ -4470,9 +4666,6 @@ unsafe extern "C" {
     pub fn ggml_cpu_has_vxe() -> ::std::os::raw::c_int;
 }
 unsafe extern "C" {
-    pub fn ggml_cpu_has_nnpa() -> ::std::os::raw::c_int;
-}
-unsafe extern "C" {
     pub fn ggml_cpu_has_wasm_simd() -> ::std::os::raw::c_int;
 }
 unsafe extern "C" {
@@ -4547,6 +4740,9 @@ unsafe extern "C" {
 }
 unsafe extern "C" {
     pub fn ggml_cpu_fp32_to_fp32(arg1: *const f32, arg2: *mut f32, arg3: i64);
+}
+unsafe extern "C" {
+    pub fn ggml_cpu_fp32_to_i32(arg1: *const f32, arg2: *mut i32, arg3: i64);
 }
 unsafe extern "C" {
     pub fn ggml_cpu_fp32_to_fp16(arg1: *const f32, arg2: *mut ggml_fp16_t, arg3: i64);
@@ -5190,6 +5386,7 @@ pub struct whisper_full_params {
     pub tdrz_enable: bool,
     pub suppress_regex: *const ::std::os::raw::c_char,
     pub initial_prompt: *const ::std::os::raw::c_char,
+    pub carry_initial_prompt: bool,
     pub prompt_tokens: *const whisper_token,
     pub prompt_n_tokens: ::std::os::raw::c_int,
     pub language: *const ::std::os::raw::c_char,
@@ -5256,7 +5453,7 @@ const _: () = {
 };
 #[allow(clippy::unnecessary_operation, clippy::identity_op)]
 const _: () = {
-    ["Size of whisper_full_params"][::std::mem::size_of::<whisper_full_params>() - 296usize];
+    ["Size of whisper_full_params"][::std::mem::size_of::<whisper_full_params>() - 304usize];
     ["Alignment of whisper_full_params"][::std::mem::align_of::<whisper_full_params>() - 8usize];
     ["Offset of field: whisper_full_params::strategy"]
         [::std::mem::offset_of!(whisper_full_params, strategy) - 0usize];
@@ -5306,70 +5503,72 @@ const _: () = {
         [::std::mem::offset_of!(whisper_full_params, suppress_regex) - 64usize];
     ["Offset of field: whisper_full_params::initial_prompt"]
         [::std::mem::offset_of!(whisper_full_params, initial_prompt) - 72usize];
+    ["Offset of field: whisper_full_params::carry_initial_prompt"]
+        [::std::mem::offset_of!(whisper_full_params, carry_initial_prompt) - 80usize];
     ["Offset of field: whisper_full_params::prompt_tokens"]
-        [::std::mem::offset_of!(whisper_full_params, prompt_tokens) - 80usize];
+        [::std::mem::offset_of!(whisper_full_params, prompt_tokens) - 88usize];
     ["Offset of field: whisper_full_params::prompt_n_tokens"]
-        [::std::mem::offset_of!(whisper_full_params, prompt_n_tokens) - 88usize];
+        [::std::mem::offset_of!(whisper_full_params, prompt_n_tokens) - 96usize];
     ["Offset of field: whisper_full_params::language"]
-        [::std::mem::offset_of!(whisper_full_params, language) - 96usize];
+        [::std::mem::offset_of!(whisper_full_params, language) - 104usize];
     ["Offset of field: whisper_full_params::detect_language"]
-        [::std::mem::offset_of!(whisper_full_params, detect_language) - 104usize];
+        [::std::mem::offset_of!(whisper_full_params, detect_language) - 112usize];
     ["Offset of field: whisper_full_params::suppress_blank"]
-        [::std::mem::offset_of!(whisper_full_params, suppress_blank) - 105usize];
+        [::std::mem::offset_of!(whisper_full_params, suppress_blank) - 113usize];
     ["Offset of field: whisper_full_params::suppress_nst"]
-        [::std::mem::offset_of!(whisper_full_params, suppress_nst) - 106usize];
+        [::std::mem::offset_of!(whisper_full_params, suppress_nst) - 114usize];
     ["Offset of field: whisper_full_params::temperature"]
-        [::std::mem::offset_of!(whisper_full_params, temperature) - 108usize];
+        [::std::mem::offset_of!(whisper_full_params, temperature) - 116usize];
     ["Offset of field: whisper_full_params::max_initial_ts"]
-        [::std::mem::offset_of!(whisper_full_params, max_initial_ts) - 112usize];
+        [::std::mem::offset_of!(whisper_full_params, max_initial_ts) - 120usize];
     ["Offset of field: whisper_full_params::length_penalty"]
-        [::std::mem::offset_of!(whisper_full_params, length_penalty) - 116usize];
+        [::std::mem::offset_of!(whisper_full_params, length_penalty) - 124usize];
     ["Offset of field: whisper_full_params::temperature_inc"]
-        [::std::mem::offset_of!(whisper_full_params, temperature_inc) - 120usize];
+        [::std::mem::offset_of!(whisper_full_params, temperature_inc) - 128usize];
     ["Offset of field: whisper_full_params::entropy_thold"]
-        [::std::mem::offset_of!(whisper_full_params, entropy_thold) - 124usize];
+        [::std::mem::offset_of!(whisper_full_params, entropy_thold) - 132usize];
     ["Offset of field: whisper_full_params::logprob_thold"]
-        [::std::mem::offset_of!(whisper_full_params, logprob_thold) - 128usize];
+        [::std::mem::offset_of!(whisper_full_params, logprob_thold) - 136usize];
     ["Offset of field: whisper_full_params::no_speech_thold"]
-        [::std::mem::offset_of!(whisper_full_params, no_speech_thold) - 132usize];
+        [::std::mem::offset_of!(whisper_full_params, no_speech_thold) - 140usize];
     ["Offset of field: whisper_full_params::greedy"]
-        [::std::mem::offset_of!(whisper_full_params, greedy) - 136usize];
+        [::std::mem::offset_of!(whisper_full_params, greedy) - 144usize];
     ["Offset of field: whisper_full_params::beam_search"]
-        [::std::mem::offset_of!(whisper_full_params, beam_search) - 140usize];
+        [::std::mem::offset_of!(whisper_full_params, beam_search) - 148usize];
     ["Offset of field: whisper_full_params::new_segment_callback"]
-        [::std::mem::offset_of!(whisper_full_params, new_segment_callback) - 152usize];
+        [::std::mem::offset_of!(whisper_full_params, new_segment_callback) - 160usize];
     ["Offset of field: whisper_full_params::new_segment_callback_user_data"]
-        [::std::mem::offset_of!(whisper_full_params, new_segment_callback_user_data) - 160usize];
+        [::std::mem::offset_of!(whisper_full_params, new_segment_callback_user_data) - 168usize];
     ["Offset of field: whisper_full_params::progress_callback"]
-        [::std::mem::offset_of!(whisper_full_params, progress_callback) - 168usize];
+        [::std::mem::offset_of!(whisper_full_params, progress_callback) - 176usize];
     ["Offset of field: whisper_full_params::progress_callback_user_data"]
-        [::std::mem::offset_of!(whisper_full_params, progress_callback_user_data) - 176usize];
+        [::std::mem::offset_of!(whisper_full_params, progress_callback_user_data) - 184usize];
     ["Offset of field: whisper_full_params::encoder_begin_callback"]
-        [::std::mem::offset_of!(whisper_full_params, encoder_begin_callback) - 184usize];
+        [::std::mem::offset_of!(whisper_full_params, encoder_begin_callback) - 192usize];
     ["Offset of field: whisper_full_params::encoder_begin_callback_user_data"]
-        [::std::mem::offset_of!(whisper_full_params, encoder_begin_callback_user_data) - 192usize];
+        [::std::mem::offset_of!(whisper_full_params, encoder_begin_callback_user_data) - 200usize];
     ["Offset of field: whisper_full_params::abort_callback"]
-        [::std::mem::offset_of!(whisper_full_params, abort_callback) - 200usize];
+        [::std::mem::offset_of!(whisper_full_params, abort_callback) - 208usize];
     ["Offset of field: whisper_full_params::abort_callback_user_data"]
-        [::std::mem::offset_of!(whisper_full_params, abort_callback_user_data) - 208usize];
+        [::std::mem::offset_of!(whisper_full_params, abort_callback_user_data) - 216usize];
     ["Offset of field: whisper_full_params::logits_filter_callback"]
-        [::std::mem::offset_of!(whisper_full_params, logits_filter_callback) - 216usize];
+        [::std::mem::offset_of!(whisper_full_params, logits_filter_callback) - 224usize];
     ["Offset of field: whisper_full_params::logits_filter_callback_user_data"]
-        [::std::mem::offset_of!(whisper_full_params, logits_filter_callback_user_data) - 224usize];
+        [::std::mem::offset_of!(whisper_full_params, logits_filter_callback_user_data) - 232usize];
     ["Offset of field: whisper_full_params::grammar_rules"]
-        [::std::mem::offset_of!(whisper_full_params, grammar_rules) - 232usize];
+        [::std::mem::offset_of!(whisper_full_params, grammar_rules) - 240usize];
     ["Offset of field: whisper_full_params::n_grammar_rules"]
-        [::std::mem::offset_of!(whisper_full_params, n_grammar_rules) - 240usize];
+        [::std::mem::offset_of!(whisper_full_params, n_grammar_rules) - 248usize];
     ["Offset of field: whisper_full_params::i_start_rule"]
-        [::std::mem::offset_of!(whisper_full_params, i_start_rule) - 248usize];
+        [::std::mem::offset_of!(whisper_full_params, i_start_rule) - 256usize];
     ["Offset of field: whisper_full_params::grammar_penalty"]
-        [::std::mem::offset_of!(whisper_full_params, grammar_penalty) - 256usize];
+        [::std::mem::offset_of!(whisper_full_params, grammar_penalty) - 264usize];
     ["Offset of field: whisper_full_params::vad"]
-        [::std::mem::offset_of!(whisper_full_params, vad) - 260usize];
+        [::std::mem::offset_of!(whisper_full_params, vad) - 268usize];
     ["Offset of field: whisper_full_params::vad_model_path"]
-        [::std::mem::offset_of!(whisper_full_params, vad_model_path) - 264usize];
+        [::std::mem::offset_of!(whisper_full_params, vad_model_path) - 272usize];
     ["Offset of field: whisper_full_params::vad_params"]
-        [::std::mem::offset_of!(whisper_full_params, vad_params) - 272usize];
+        [::std::mem::offset_of!(whisper_full_params, vad_params) - 280usize];
 };
 unsafe extern "C" {
     pub fn whisper_context_default_params_by_ref() -> *mut whisper_context_params;
