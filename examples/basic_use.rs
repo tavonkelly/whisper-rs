@@ -51,15 +51,16 @@ fn main() {
     // note that you don't need to use these, you can do it yourself or any other way you want
     // these are just provided for convenience
     let mut inter_samples = vec![Default::default(); samples.len()];
+    let mut mono_samples = vec![Default::default(); samples.len() / 2];
 
     whisper_rs::convert_integer_to_float_audio(&samples, &mut inter_samples)
         .expect("failed to convert audio data");
-    let samples = whisper_rs::convert_stereo_to_mono_audio(&inter_samples)
+    whisper_rs::convert_stereo_to_mono_audio(&inter_samples, &mut mono_samples)
         .expect("failed to convert audio data");
 
     // now we can run the model
     state
-        .full(params, &samples[..])
+        .full(params, &mono_samples[..])
         .expect("failed to run model");
 
     // fetch the results

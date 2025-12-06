@@ -801,7 +801,7 @@ impl<'a, 'b> FullParams<'a, 'b> {
     /// # Examples
     /// ```
     /// # use whisper_rs::{FullParams, SamplingStrategy};
-    /// let mut params = FullParams::new(SamplingStrategy::default());
+    /// let mut params = FullParams::new(SamplingStrategy::Greedy { best_of: 5 });
     /// params.set_initial_prompt("Hello, world!");
     /// // ... further usage of params ...
     /// ```
