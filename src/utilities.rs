@@ -51,7 +51,8 @@ pub fn convert_integer_to_float_audio(
 /// ```
 /// # use whisper_rs::convert_stereo_to_mono_audio;
 /// let samples = [0.0f32; 1024];
-/// let mono = convert_stereo_to_mono_audio(&samples).expect("should be no half samples missing");
+/// let mut mono_samples = [0.0f32; 512];
+/// convert_stereo_to_mono_audio(&samples, &mut mono_samples).expect("should be no half samples missing");
 /// ```
 pub fn convert_stereo_to_mono_audio(input: &[f32], output: &mut [f32]) -> Result<(), WhisperError> {
     let (input, []) = input.as_chunks::<2>() else {
